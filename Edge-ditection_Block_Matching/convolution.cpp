@@ -206,8 +206,8 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 		}
 	}
 	
-	for (fy = 1; fy <= 100; fy++) {
-		for (fx = 1; fx <= 100; fx++) {
+	for (fy = 1; fy <= image_y; fy++) {
+		for (fx = 1; fx <= image_x; fx++) {
 			spfil1[fx][fy] = 0;
 		}
 	}

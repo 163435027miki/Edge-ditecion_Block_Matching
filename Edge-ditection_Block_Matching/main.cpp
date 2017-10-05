@@ -9,6 +9,8 @@
 using namespace std;
 
 int image_x, image_y;		//画像サイズ
+int image_xt, image_yt;		//画像サイズ
+
 char date[128] = "";
 //出力ファイルディレクトリ
 char date_directory[128];
@@ -56,7 +58,7 @@ int main(int argc, char** argv){
 				//for (sd = 0; sd <= 0; sd = sd + 10) {
 
 					if (paramerter[0] == 1 || paramerter[0] == 2) {
-						sprintf(image_nameP,"..\\property_usa\\simulation17-0906\\property_BOAT_sobel\\property_%d×%dsobel_conv_",paramerter[paramerter_count],paramerter[paramerter_count]);
+						sprintf(image_nameP, "..\\property_usa\\property_3k_conv_",paramerter[paramerter_count],paramerter[paramerter_count]);
 					//	sprintf(image_nameP, "..\\property_usa\\simulation17-0725\\sobel\\15-%dp-%dT_sobel", pixel[z2], Togire[z], paramerter[paramerter_count]);
 						sprintf(image_nameP2, "%ssd%d.txt", image_nameP, sd);
 						//sprintf(image_nameP2, "%s\\property_%d×%dsobel_conv_sd%d.txt", image_nameP, paramerter[paramerter_count], paramerter[paramerter_count], sd);
@@ -83,7 +85,7 @@ int main(int argc, char** argv){
 
 					//単スレッド処理
 				//	cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-					//arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+					arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
 					//Bazen_kernel(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
 
 					switch (paramerter[0]) {
@@ -91,7 +93,7 @@ int main(int argc, char** argv){
 					case 2: paramerter[0] = 5;
 					default: paramerter[0] = 3;
 					}
-
+					arctan(date_directory, image_x, image_y, paramerter, paramerter_count, sd, date);
 					//cossim(date_directory, image_x, image_y, paramerter, paramerter_count, sd, date);
 
 				//	Bazen(image_nameP2,image_x,image_y,paramerter,paramerter_count,sd,date,date_directory);
