@@ -23,12 +23,18 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 
 	char *Input_Filename_atan1_s = "\\V(0).csv";			//入力ファイル名の指定
 	char *Input_Filename_atan3_s = "\\V(90).csv";
+	char *Input_Filename_atan1t_s = "\\V(0)t.csv";			//入力ファイル名の指定
+	char *Input_Filename_atan3t_s = "\\V(90)t.csv";
 	char inputdate_directory_atan[128];
 
 	char *math_atan1_s = "\\arctan.csv";				//出力結果のファイル名の指定
 	char *math_atan5_s = "\\threshold_atan_high.csv";
 	char *math_atan8_s = "\\threshold2.csv";
 	char *math_atan9_s = "\\threshold_atan_low.csv";
+	char *math_atan1t_s = "\\arctant.csv";
+	char *math_atan5t_s = "\\threshold_atan_hight.csv";
+	char *math_atan8t_s = "\\threshold2t.csv";
+	char *math_atan9t_s = "\\threshold_atan_lowt.csv";
 
 	char Input_Filename_atan1[255];						//入力ファイル名・入力元の設定
 	char Input_Filename_atan3[255];
@@ -74,45 +80,87 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 	switch (paramerter[0]) {
 		case 1: 
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 			break;
 		case 2:
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 			break;
 		case 3:
-			sprintf(Input_Filename_atan1_s, "\\V(0)t.csv");			//入力ファイル名の指定
-			sprintf(Input_Filename_atan3_s, "\\V(90)t.csv");
-			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+			sprintf(inputdate_directory_atan, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
 		case 4:
-			sprintf(Input_Filename_atan1_s, "\\V(0)t.csv");			//入力ファイル名の指定
-			sprintf(Input_Filename_atan3_s, "\\V(90)t.csv");
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
 		case 5:
-			sprintf(Input_Filename_atan1_s, "\\V(0)t.csv");			//入力ファイル名の指定
-			sprintf(Input_Filename_atan3_s, "\\V(90)t.csv");
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
 		default :
 			sprintf(inputdate_directory_atan, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);
+			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
+			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 			break;
 	}
 	
 	//Inputファイルのディレクトリ設定
 	printf("%s\n", inputdate_directory_atan);
-	sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);	
-	sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
+	//sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);	
+	//sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 
 	printf("Input_Filename_atan1=%s\n", Input_Filename_atan1);
 
 	//Outputディレクトリの作成
 	switch (paramerter[0]) {
-	case 1:sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd); break;
-	case 2:sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd); break;
-	case 3:sprintf(date_directory4, "%s%dk_atan_sd%dt", date_directory, paramerter[paramerter_count], sd); break;
-	case 4:sprintf(date_directory4, "%s%dk_atan_sd%dt", date_directory, paramerter[paramerter_count], sd); break;
-	case 5:sprintf(date_directory4, "%s%dk_atan_sd%dt", date_directory, paramerter[paramerter_count], sd); break;
-	default:sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd); break;
+	case 1:
+		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s); 
+		break;
+	case 2:
+		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s); 
+		break;
+	case 3:
+		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5t_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
+		break;
+	case 4:
+		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5t_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
+		break;
+	case 5:
+		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5t_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
+		break;
+	default:
+		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
+		sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
+		sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
+		sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s); 
+		break;
 	}
 	
 	if (_mkdir(date_directory4) == 0) {
@@ -123,10 +171,10 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 	}
 
 	//Outputファイルのディレクトリ設定
-	sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
-	sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
-	sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
-	sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s);
+	//sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
+	//sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
+	//sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
+	//sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s);
 
 ////////////////////////////ファイルの読み込み//////////////////////////////////////////////////////////////////////////////
 

@@ -26,7 +26,7 @@ int paramerter_count_max = 3;
 
 int timeset(char date[]);
 int notimeset(char date[], int pixel[], int Togire[], int z2, int z);
-int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
+int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
 int cossim(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 //int cossim_result_row(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count_max,int sd_max);
@@ -71,8 +71,9 @@ int main(int argc, char** argv){
 						//sprintf(image_nameP2, "%s.txt", image_nameP);
 					}
 
-					convolution(argc, argv, image_nameP2, image_x, image_y, paramerter, paramerter_count, sd, date, date_directory);
-
+					convolution(argc, argv, image_nameP2, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd, date, date_directory);
+					
+					printf("x=%d,y=%d\nxt=%d,yt=%d\n", image_x, image_y, image_xt, image_yt);
 					//マルチスレッド処理
 			//		std::thread t1(cossim, std::ref(date_directory), std::ref(image_x), std::ref(image_y), std::ref(paramerter), std::ref(paramerter_count), std::ref(sd), std::ref(date));
 			//		std::thread t2(arctan, std::ref(date_directory), std::ref(image_x), std::ref(image_y), std::ref(paramerter), std::ref(paramerter_count), std::ref(sd), std::ref(date));
@@ -93,7 +94,7 @@ int main(int argc, char** argv){
 					case 2: paramerter[0] = 5;
 					default: paramerter[0] = 3;
 					}
-					arctan(date_directory, image_x, image_y, paramerter, paramerter_count, sd, date);
+					arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 					//cossim(date_directory, image_x, image_y, paramerter, paramerter_count, sd, date);
 
 				//	Bazen(image_nameP2,image_x,image_y,paramerter,paramerter_count,sd,date,date_directory);

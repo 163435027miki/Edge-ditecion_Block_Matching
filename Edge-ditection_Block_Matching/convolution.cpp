@@ -105,7 +105,7 @@ std::tuple<int,std::vector<std::vector<double>>> read_filter(char inputfilter_di
 int convolution_gaus_sobel(int &image_y,int &image_x,int fs, int hfs,double *output1[],double *spfil1[],double *input_bmp[],double magnification);
 void read_filter_gaus(int fs,double *spfil1_g[]);
 
-int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]) {
+int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]) {
 
 	//個別で画像を指定したいとき
 	//std::ifstream propety_dire("..\\property_usa\\simulation17-0613\\property_3k_conv_sd0.txt");
@@ -126,7 +126,7 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	int use_underthreshold_flag = 1;
 	int Save_image_flag[9][9];
 
-	int image_xt, image_yt;
+	//int image_xt, image_yt;
 /////////////画像作成の有無////////////////////////////////////////////////////////////////
 
 	//画像作成判断の初期化(デフォルトでは作成しない)
