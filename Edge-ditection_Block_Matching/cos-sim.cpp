@@ -56,6 +56,15 @@ int i,j;
 	char *Input_Filename6_s = "\\V(225).csv";
 	char *Input_Filename7_s = "\\V(270).csv";
 	char *Input_Filename8_s = "\\V(315).csv";
+
+	char *Input_Filename1t_s = "\\V(0)t.csv";			//入力ファイル名の指定
+	char *Input_Filename2t_s = "\\V(45)t.csv";
+	char *Input_Filename3t_s = "\\V(90)t.csv";
+	char *Input_Filename4t_s = "\\V(135)t.csv";
+	char *Input_Filename5t_s = "\\V(180)t.csv";
+	char *Input_Filename6t_s = "\\V(225)t.csv";
+	char *Input_Filename7t_s = "\\V(270)t.csv";
+	char *Input_Filename8t_s = "\\V(315)t.csv";
 	
 	char *math_name1_s = "innerp.csv";				//出力結果のファイル名の指定
 	char *math_name2_s = "V_sqrt.csv";
@@ -68,6 +77,18 @@ int i,j;
 	char *math_name9_s = "threshold_low.csv";
 	char *math_name10_s = "threshold3.csv";
 	char *math_name11_s = "use_Rvector_number_LC.csv";
+
+	char *math_name1t_s = "innerpt.csv";				//出力結果のファイル名の指定
+	char *math_name2t_s = "V_sqrtt.csv";
+	char *math_name3t_s = "Cos_similarityt.csv";
+	char *math_name4t_s = "Anglet.csv";
+	char *math_name5t_s = "threshold_hight.csv";
+	char *math_name6t_s = "use_Rvector_flagt.csv";
+	char *math_name7t_s = "use_Rvector_numbert.csv";
+	char *math_name8t_s = "threshold2t.csv";
+	char *math_name9t_s = "threshold_lowt.csv";
+	char *math_name10t_s = "threshold3t.csv";
+	char *math_name11t_s = "use_Rvector_number_LCt.csv";
 
 	char Input_Rvectormagni_name[255];
 	char Input_Rvectorname1[250];					//基準ベクトル名・基準ベクトルの入力先の設定
@@ -128,7 +149,7 @@ int i,j;
 	FILE *fp_innerp,*fp_V_sqrt,*fp_Cos_similarity,*fp_Angle,*fp_use_Rvector_flag,*fp_use_Rvector_number,*fp_threshold,*fp_threshold_high,*fp_threshold2,*fp_threshold3,*fp_threshold_number_LC;
 
 	void Rvector_read();
-	void Read_output();
+	void Read_output(int paramerter[]);
 	int local_connectivity(int image_x,int image_y,double *local_flag[],double *threshold_LC_number[]);
 
 int cossim(char date_directory[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[]){
@@ -204,21 +225,55 @@ int cossim(char date_directory[],int &image_x,int &image_y,int paramerter[],int 
 
 ////////////////////////////入出力ディレクトリの作成//////////////////////////////////////////////////////////////////////////////
 	
-	//Inputファイルのディレクトリ設定
-	sprintf(Input_Filename1,"%s%s",inputdate_directory,Input_Filename1_s);
-	sprintf(Input_Filename2,"%s%s",inputdate_directory,Input_Filename2_s);
-	sprintf(Input_Filename3,"%s%s",inputdate_directory,Input_Filename3_s);
-	sprintf(Input_Filename4,"%s%s",inputdate_directory,Input_Filename4_s);
-	sprintf(Input_Filename5,"%s%s",inputdate_directory,Input_Filename5_s);
-	sprintf(Input_Filename6,"%s%s",inputdate_directory,Input_Filename6_s);
-	sprintf(Input_Filename7,"%s%s",inputdate_directory,Input_Filename7_s);
-	sprintf(Input_Filename8,"%s%s",inputdate_directory,Input_Filename8_s);
+	switch (paramerter[0]) {
+	case 1:
+	case 2:
+		//Inputファイルのディレクトリ設定
+		sprintf(Input_Filename1, "%s%s", inputdate_directory, Input_Filename1_s);
+		sprintf(Input_Filename2, "%s%s", inputdate_directory, Input_Filename2_s);
+		sprintf(Input_Filename3, "%s%s", inputdate_directory, Input_Filename3_s);
+		sprintf(Input_Filename4, "%s%s", inputdate_directory, Input_Filename4_s);
+		sprintf(Input_Filename5, "%s%s", inputdate_directory, Input_Filename5_s);
+		sprintf(Input_Filename6, "%s%s", inputdate_directory, Input_Filename6_s);
+		sprintf(Input_Filename7, "%s%s", inputdate_directory, Input_Filename7_s);
+		sprintf(Input_Filename8, "%s%s", inputdate_directory, Input_Filename8_s);
+		break;
+	case 3:
+	case 4:
+	case 5:
+		//Inputファイルのディレクトリ設定
+		sprintf(Input_Filename1, "%s%s", inputdate_directory, Input_Filename1t_s);
+		sprintf(Input_Filename2, "%s%s", inputdate_directory, Input_Filename2t_s);
+		sprintf(Input_Filename3, "%s%s", inputdate_directory, Input_Filename3t_s);
+		sprintf(Input_Filename4, "%s%s", inputdate_directory, Input_Filename4t_s);
+		sprintf(Input_Filename5, "%s%s", inputdate_directory, Input_Filename5t_s);
+		sprintf(Input_Filename6, "%s%s", inputdate_directory, Input_Filename6t_s);
+		sprintf(Input_Filename7, "%s%s", inputdate_directory, Input_Filename7t_s);
+		sprintf(Input_Filename8, "%s%s", inputdate_directory, Input_Filename8t_s);
+		break;
+	default :
+		sprintf(Input_Filename1, "%s%s", inputdate_directory, Input_Filename1_s);
+		sprintf(Input_Filename2, "%s%s", inputdate_directory, Input_Filename2_s);
+		sprintf(Input_Filename3, "%s%s", inputdate_directory, Input_Filename3_s);
+		sprintf(Input_Filename4, "%s%s", inputdate_directory, Input_Filename4_s);
+		sprintf(Input_Filename5, "%s%s", inputdate_directory, Input_Filename5_s);
+		sprintf(Input_Filename6, "%s%s", inputdate_directory, Input_Filename6_s);
+		sprintf(Input_Filename7, "%s%s", inputdate_directory, Input_Filename7_s);
+		sprintf(Input_Filename8, "%s%s", inputdate_directory, Input_Filename8_s);
+		break;
+	}
 
-	//Outputディレクトリの設定
-	if(paramerter[0]==1 || paramerter[0]==2){
-		sprintf(date_directory3, "%s%d×%dsobel_cossim_sd%d",date_directory, paramerter[paramerter_count],paramerter[paramerter_count],sd);	
-			}else{
-		sprintf(date_directory3, "%s%dk_cossim_sd%d",date_directory, paramerter[paramerter_count],sd);
+	
+	switch (paramerter[0]) {
+	case 1:
+	case 2:
+	case 4:
+	case 5:
+		sprintf(date_directory3, "%s%d×%dsobel_cossim_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		break;
+	default :
+		sprintf(date_directory3, "%s%dk_cossim_sd%d", date_directory, paramerter[paramerter_count], sd);
+		break;
 	}
 	//Outputディレクトリの作成
 	if (_mkdir(date_directory3) == 0) {
@@ -275,7 +330,7 @@ int cossim(char date_directory[],int &image_x,int &image_y,int paramerter[],int 
 	}
 
 	//出力するファイルを開く
-	Read_output();
+	Read_output(paramerter);
 
   
 ///////////////////////応答電圧のcsvの読み込み//////////////////////////////////////////////////////////////////////////////////////////	
@@ -854,20 +909,51 @@ int cossim(char date_directory[],int &image_x,int &image_y,int paramerter[],int 
 }
 
 
-void Read_output(){
+void Read_output(int paramerter[]){
 ///////////////////Outputファイルのディレクトリ設定////////////////////////////////////////////////
-	sprintf(math_name1,"%s\\%s",date_directory3, math_name1_s);
-	sprintf(math_name2,"%s\\%s",date_directory3, math_name2_s);
-	sprintf(math_name3,"%s\\%s",date_directory3, math_name3_s);
-	sprintf(math_name4,"%s\\%s",date_directory3, math_name4_s);
-	sprintf(math_name5,"%s\\%s",date_directory3, math_name5_s);
-	sprintf(math_name6,"%s\\%s",date_directory3, math_name6_s);
-	sprintf(math_name7,"%s\\%s",date_directory3, math_name7_s);
-	sprintf(math_name8,"%s\\%s",date_directory3, math_name8_s);
-	sprintf(math_name9,"%s\\%s",date_directory3, math_name9_s);
-	sprintf(math_name10, "%s\\%s", date_directory3, math_name10_s);
-	sprintf(math_name11, "%s\\%s", date_directory3, math_name11_s);
-
+	switch (paramerter[0]) {
+	case 1:
+	case 2:
+		sprintf(math_name1, "%s\\%s", date_directory3, math_name1_s);
+		sprintf(math_name2, "%s\\%s", date_directory3, math_name2_s);
+		sprintf(math_name3, "%s\\%s", date_directory3, math_name3_s);
+		sprintf(math_name4, "%s\\%s", date_directory3, math_name4_s);
+		sprintf(math_name5, "%s\\%s", date_directory3, math_name5_s);
+		sprintf(math_name6, "%s\\%s", date_directory3, math_name6_s);
+		sprintf(math_name7, "%s\\%s", date_directory3, math_name7_s);
+		sprintf(math_name8, "%s\\%s", date_directory3, math_name8_s);
+		sprintf(math_name9, "%s\\%s", date_directory3, math_name9_s);
+		sprintf(math_name10, "%s\\%s", date_directory3, math_name10_s);
+		sprintf(math_name11, "%s\\%s", date_directory3, math_name11_s);
+		break;
+	case 3:
+	case 4:
+	case 5:
+		sprintf(math_name1, "%s\\%s", date_directory3, math_name1t_s);
+		sprintf(math_name2, "%s\\%s", date_directory3, math_name2t_s);
+		sprintf(math_name3, "%s\\%s", date_directory3, math_name3t_s);
+		sprintf(math_name4, "%s\\%s", date_directory3, math_name4t_s);
+		sprintf(math_name5, "%s\\%s", date_directory3, math_name5t_s);
+		sprintf(math_name6, "%s\\%s", date_directory3, math_name6t_s);
+		sprintf(math_name7, "%s\\%s", date_directory3, math_name7t_s);
+		sprintf(math_name8, "%s\\%s", date_directory3, math_name8t_s);
+		sprintf(math_name9, "%s\\%s", date_directory3, math_name9t_s);
+		sprintf(math_name10, "%s\\%s", date_directory3, math_name10t_s);
+		sprintf(math_name11, "%s\\%s", date_directory3, math_name11t_s);
+		break;
+	default :
+		sprintf(math_name1, "%s\\%s", date_directory3, math_name1_s);
+		sprintf(math_name2, "%s\\%s", date_directory3, math_name2_s);
+		sprintf(math_name3, "%s\\%s", date_directory3, math_name3_s);
+		sprintf(math_name4, "%s\\%s", date_directory3, math_name4_s);
+		sprintf(math_name5, "%s\\%s", date_directory3, math_name5_s);
+		sprintf(math_name6, "%s\\%s", date_directory3, math_name6_s);
+		sprintf(math_name7, "%s\\%s", date_directory3, math_name7_s);
+		sprintf(math_name8, "%s\\%s", date_directory3, math_name8_s);
+		sprintf(math_name9, "%s\\%s", date_directory3, math_name9_s);
+		sprintf(math_name10, "%s\\%s", date_directory3, math_name10_s);
+		sprintf(math_name11, "%s\\%s", date_directory3, math_name11_s);
+	}
 	//ファイルオープン及び確認
 	if (cos_eco_mode_flag != 1) {
 		if ((fp_innerp = fopen(math_name1, "w")) == NULL) { printf("入力エラー innerp.csvが開けません\nFile_name : %s", math_name1); exit(1); }

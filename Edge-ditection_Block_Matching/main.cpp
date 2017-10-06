@@ -29,6 +29,7 @@ int notimeset(char date[], int pixel[], int Togire[], int z2, int z);
 int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
 int cossim(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[]);
 //int cossim_result_row(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count_max,int sd_max);
 //int Bazen_kernel(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 //int Bazen(char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
@@ -85,8 +86,8 @@ int main(int argc, char** argv){
 
 
 					//単スレッド処理
-				//	cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-					arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+					cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+				//	arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
 					//Bazen_kernel(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
 
 					switch (paramerter[0]) {
@@ -94,8 +95,10 @@ int main(int argc, char** argv){
 					case 2: paramerter[0] = 5;
 					default: paramerter[0] = 3;
 					}
-					arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
-					//cossim(date_directory, image_x, image_y, paramerter, paramerter_count, sd, date);
+					//arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+					cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+
+					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date);
 
 				//	Bazen(image_nameP2,image_x,image_y,paramerter,paramerter_count,sd,date,date_directory);
 				}

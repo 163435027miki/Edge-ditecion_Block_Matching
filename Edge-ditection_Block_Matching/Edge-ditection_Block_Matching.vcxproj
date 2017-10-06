@@ -153,6 +153,7 @@
     <ClCompile Include="arctan.cpp" />
     <ClCompile Include="convolution.cpp" />
     <ClCompile Include="cos-sim.cpp" />
+    <ClCompile Include="Edge-detection_Block_Matching.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="make_image.cpp" />
     <ClCompile Include="Nrutil.cpp" />

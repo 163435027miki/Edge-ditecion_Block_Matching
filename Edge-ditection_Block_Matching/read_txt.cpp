@@ -9,7 +9,7 @@
 #include <opencv2/opencv.hpp>
 
 
-void readCSVData(
+void readTXTData(
   double** pArray,      /* txtデータ格納用配列 */
   int* pElems,          /* txtデータの要素数 */
   int* pRows,           /* txtデータの行数 */
@@ -38,7 +38,7 @@ std::tuple<int, int, std::vector<std::vector<double>>> read_txt(const char *file
   }
   */
   /* CSVデータの読込 */
-  readCSVData(&data, &elems, &rows, &cols, filename);
+  readTXTData(&data, &elems, &rows, &cols, filename);
 
 //  printf("\n");
   printf("filename = %s\n", filename);
@@ -91,7 +91,7 @@ std::tuple<int, int, std::vector<std::vector<double>>> read_txt(const char *file
   return std::forward_as_tuple(rows,cols,Output);
 }
 
-void readCSVData(
+void readTXTData(
   double** pArray,      /* CSVデータ格納用配列 */
   int* pElems,          /* CSVデータの要素数 */
   int* pRows,           /* CSVデータの行数 */

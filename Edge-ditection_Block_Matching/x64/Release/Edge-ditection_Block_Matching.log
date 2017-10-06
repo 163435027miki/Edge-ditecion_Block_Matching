@@ -1,9 +1,9 @@
-﻿  arctan.cpp
+﻿  Edge-detection_Block_Matching.cpp
   コード生成しています。
 d:\visual studio 2015\projects\edge-ditecion_block_matching\edge-ditection_block_matching\convolution.cpp(381): warning C4715: 'convolution': 値を返さないコントロール パスがあります。
-  8 of 480 functions ( 1.7%) were compiled, the rest were copied from previous compilation.
+  7 of 487 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    2 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.exe
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.pdb (Full PDB)
