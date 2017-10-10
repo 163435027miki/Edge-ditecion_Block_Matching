@@ -11,12 +11,14 @@ using namespace std;
 int image_x, image_y;		//画像サイズ
 int image_xt, image_yt;		//画像サイズ
 
+char Inputimage[128];
 char date[128] = "";
 //出力ファイルディレクトリ
 char date_directory[128];
 char image_nameP[128];
 char image_nameP2[256];
 int sd;
+
 
 
 //標準偏差の調整箇所
@@ -26,10 +28,10 @@ int paramerter_count_max = 3;
 
 int timeset(char date[]);
 int notimeset(char date[], int pixel[], int Togire[], int z2, int z);
-int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
+int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[], char Inputimage[]);
 int cossim(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[]);
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs,double threshold_EdBM, char Inputimage[]);
 //int cossim_result_row(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count_max,int sd_max);
 //int Bazen_kernel(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 //int Bazen(char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
@@ -41,6 +43,8 @@ int main(int argc, char** argv){
 
 	int pixel[10]={0,1,3,5,7,9,13,17};
 	int Togire[10] = { 0,1,3,5,7,9,13,17 };
+	int Bs=5;
+	double threshold_EdBM=3;
 	
 
 	int paramerter[4]={0,3,10,100};		//paramerter[0]=1でsobelフィルタ,paramerter[0]=2でgaus×sobelフィルタ
@@ -72,7 +76,7 @@ int main(int argc, char** argv){
 						//sprintf(image_nameP2, "%s.txt", image_nameP);
 					}
 
-					convolution(argc, argv, image_nameP2, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd, date, date_directory);
+					convolution(argc, argv, image_nameP2, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd, date, date_directory, Inputimage);
 					
 					printf("x=%d,y=%d\nxt=%d,yt=%d\n", image_x, image_y, image_xt, image_yt);
 					//マルチスレッド処理
@@ -83,7 +87,7 @@ int main(int argc, char** argv){
 			//		t2.join();
 				//	t3.join();
 					//マルチスレッド処理_終わり
-
+					
 
 					//単スレッド処理
 					cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
@@ -97,8 +101,8 @@ int main(int argc, char** argv){
 					}
 					//arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 					cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
-
-					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date);
+					
+					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage);
 
 				//	Bazen(image_nameP2,image_x,image_y,paramerter,paramerter_count,sd,date,date_directory);
 				}

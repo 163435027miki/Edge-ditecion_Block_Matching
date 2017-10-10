@@ -1,9 +1,12 @@
-﻿  Edge-detection_Block_Matching.cpp
+﻿  write_frame.cpp
+D:\opencv-3.1.0\build\install\include\opencv2/core/mat.hpp(1965): warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+D:\opencv-3.1.0\build\install\include\opencv2/core/persistence.hpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+D:\opencv-3.1.0\build\install\include\opencv2/core/utility.hpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
+D:\opencv-3.1.0\build\install\include\opencv2/core/utility.hpp : warning C4819: ファイルは、現在のコード ページ (932) で表示できない文字を含んでいます。データの損失を防ぐために、ファイルを Unicode 形式で保存してください。
   コード生成しています。
-d:\visual studio 2015\projects\edge-ditecion_block_matching\edge-ditection_block_matching\convolution.cpp(381): warning C4715: 'convolution': 値を返さないコントロール パスがあります。
-  7 of 487 functions ( 1.4%) were compiled, the rest were copied from previous compilation.
+  8 of 506 functions ( 1.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    2 functions had inline decision re-evaluated but remain unchanged
+    37 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.exe
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.pdb (Full PDB)

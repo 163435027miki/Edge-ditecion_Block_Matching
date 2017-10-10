@@ -29,17 +29,35 @@ char inputthreshold2_deta[128];
 char inputthreshold2t_deta[128];
 
 //std::tuple<int, int, std::vector<std::vector<double>>>read_csv(const char *filename);
+int write_frame(char date_directory[], char Inputiamge[], int max_x, int max_y, int image_xt, int image_yt);
 
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[]) {
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[]) {
 	printf("****************************************\n");
 	printf("start：Edge-detection_Block_Matching\n");
 	printf("****************************************\n");
-
+	
 	//Nrutilを用いたメモリの確保
 	double **Angle = matrix(0, image_x - 1, 0, image_y - 1);
 	double **threshold2 = matrix(0, image_x - 1, 0, image_y - 1);
 	double **Anglet = matrix(0, image_xt - 1, 0, image_y - 1);
 	double **threshold2t = matrix(0, image_xt - 1, 0, image_yt - 1);
+
+	double **threshold_tMAP = matrix(0, image_xt - 1, 0, image_yt - 1);
+
+	//ブロックの数
+	int M, N;
+	M = image_xt / Bs;
+	N = image_yt / Bs;
+
+	int bm = 0;
+	int bn = 0;
+
+	double **CB = matrix(0, image_x - image_xt- 1, 0, image_y - image_yt - 1);
+	double **V = matrix(0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+
+	double min_CB;
+	int min_x, min_y;
+	
 
 	//確保したメモリを初期化する
 	for (int i = 0; i < image_y; i++) {
@@ -52,8 +70,18 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 		for (int j = 0; j < image_xt; j++) {
 			Anglet[j][i] = 0;
 			threshold2t[j][i] = 0;
+			threshold_tMAP[j][i] = 0;
 		}
 	}
+
+	for (int i = 0; i < image_y - image_yt; i++) {
+		for (int j = 0; j < image_x - image_xt; j++) {
+			CB[j][i] = 0;
+			V[j][i] = 0;
+		}
+	}
+
+	
 	
 	//inputデータの選択(cossimのみ)
 	switch (paramerter[0]){
@@ -138,6 +166,102 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 
 ///////////////Edge-detection_Block_Matching//////////////////////////////////////////////////////////////////////////////
 
+//thresholdのflag
+	for (int i = 0; i < image_yt; i++) {
+		for (int j = 0; j < image_xt; j++) {
+			if (threshold2t[j][i] >= threshold_EdBM) {
+
+				threshold_tMAP[j][i] = 1;
+
+				if(j>0 && i>0)threshold_tMAP[j - 1][i - 1] = 1;
+				if (i>0)threshold_tMAP[j][i - 1] = 1;
+				if (j<image_xt - 1 && i>0)threshold_tMAP[j + 1][i - 1] = 1;
+
+				if(j>0)threshold_tMAP[j - 1][i] = 1;
+				if (j<image_xt - 1)threshold_tMAP[j + 1][i] = 1;
+
+				if(j>0 && i<image_yt-1)threshold_tMAP[j - 1][i + 1] = 1;
+				if (i < image_yt - 1)threshold_tMAP[j][i + 1] = 1;
+				if(j<image_xt - 1 && i<image_yt - 1)threshold_tMAP[j + 1][i + 1] = 1;
+
+			}
+		}
+	}
+
+//CB
+	
+	//特定のブロックについて
+	for (int n = 0; n < N; n++) {
+		for (int m = 0; m < M; m++) {
+
+			bm = Bs*m;
+			bn = Bs*n;
+			min_CB = 0;
+			min_x = 0;
+			min_y = 0;
+			for (int y = 0; y < image_y - image_yt; y++) {
+				for (int x = 0; x < image_x - image_xt; x++) {
+					CB[x][y] = 0;
+				}
+			}
+
+
+			//座標x,yを比べる
+			for (int y = 0; y < image_y - image_yt; y++) {
+				for (int x = 0; x < image_x - image_xt; x++) {
+
+					for (int k = 0; k < Bs; k++) {
+						for (int l = 0; l < Bs; l++) {
+							if (threshold_tMAP[bm + l][bn + k] = 1) {
+								CB[x][y] += abs(Angle[x + bm + l][y + bn + k] - Anglet[bm + l][bn + k]);
+							}
+							else {
+								CB[x][y] += 0;
+							}
+
+						}
+					}
+
+				}
+			}
+			
+			//m,nについてCBが最小となるx,yを求める
+			min_CB = CB[0][0];
+			for (int y = 0;  y< image_y - image_yt; y++) {
+				for (int x = 0; x < image_x - image_xt; x++) {
+					if (CB[x][y] < min_CB) {
+						min_CB = CB[x][y];
+						min_x = x;
+						min_y = y;
+					}
+				}
+			}
+			//printf("x=%d,y=%d,%f\n", min_x, min_y,min_CB);
+			V[min_x][min_y] += 1;
+			
+		}
+	}
+
+	double max_V;
+	int max_x=0, max_y=0;
+	max_V = V[0][0];
+	for (int y = 0; y < image_y - image_yt; y++) {
+		for (int x = 0; x < image_x - image_xt; x++) {
+			
+			if (V[x][y] > max_V) {
+				max_V = V[x][y];
+				max_x = x;
+				max_y = y;
+				//printf("V[%d][%d]=%f,", x, y, V[x][y]);
+			}
+
+		}
+	}
+
+	printf("max_x=%d,max_y=%d", max_x, max_y);
+	
+
+	write_frame(date_directory, Inputiamge, max_x, max_y, image_xt, image_yt);
 
 
 	//メモリの解放
@@ -145,6 +269,10 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 	free_matrix(threshold2, 0, image_x - 1, 0, image_y - 1);
 	free_matrix(Anglet, 0, image_xt - 1, 0, image_yt - 1);
 	free_matrix(threshold2t, 0, image_xt - 1, 0, image_yt - 1);
+	free_matrix(threshold_tMAP, 0, image_xt - 1, 0, image_yt - 1);
+	free_matrix(CB, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+	free_matrix(V, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
 
+	
 	return 0;
 }
