@@ -103,6 +103,7 @@ void Rvector_createF();
 void set_outputfile(char date[],char date_directory[],int paramerter[],int paramerter_count,int sd);
 std::tuple<int,std::vector<std::vector<double>>> read_filter(char inputfilter_directory[]);
 int convolution_gaus_sobel(int &image_y,int &image_x,int fs, int hfs,double *output1[],double *spfil1[],double *input_bmp[],double magnification);
+
 void read_filter_gaus(int fs,double *spfil1_g[]);
 
 int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[], char InputImage[]) {
@@ -375,6 +376,8 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	free_matrix(output_bmp_flag, 0, image_x-1, 0, image_y-1);
 
 	printf("finishÅFconvolution\n");
+
+	
 	
 	return *InputImage;
 	

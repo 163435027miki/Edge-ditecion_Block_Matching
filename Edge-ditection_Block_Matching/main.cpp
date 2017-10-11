@@ -32,6 +32,7 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 int cossim(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs,double threshold_EdBM, char Inputimage[]);
+int otsu(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd );
 //int cossim_result_row(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count_max,int sd_max);
 //int Bazen_kernel(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 //int Bazen(char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
@@ -101,6 +102,8 @@ int main(int argc, char** argv){
 					}
 					//arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 					cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+
+					otsu(date_directory, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd);
 					
 					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage);
 

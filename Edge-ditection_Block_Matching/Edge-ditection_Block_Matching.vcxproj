@@ -157,6 +157,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="make_image.cpp" />
     <ClCompile Include="Nrutil.cpp" />
+    <ClCompile Include="otsu.cpp" />
     <ClCompile Include="read_txt.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="write_frame.cpp" />
