@@ -27,11 +27,11 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 	char *Input_Filename_atan3t_s = "\\V(90)t.csv";
 	char inputdate_directory_atan[128];
 
-	char *math_atan1_s = "\\arctan.csv";				//出力結果のファイル名の指定
+	char *math_atan1_s = "\\Angle.csv";				//出力結果のファイル名の指定
 	char *math_atan5_s = "\\threshold_atan_high.csv";
 	char *math_atan8_s = "\\threshold2.csv";
 	char *math_atan9_s = "\\threshold_atan_low.csv";
-	char *math_atan1t_s = "\\arctant.csv";
+	char *math_atan1t_s = "\\Anglet.csv";
 	char *math_atan5t_s = "\\threshold_atan_hight.csv";
 	char *math_atan8t_s = "\\threshold2t.csv";
 	char *math_atan9t_s = "\\threshold_atan_lowt.csv";
@@ -76,33 +76,44 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 	
 ////////////////////////////入出力ディレクトリの作成//////////////////////////////////////////////////////////////////////////////
 	int count_small = 0, count_large = 0;
-
+	
 	switch (paramerter[0]) {
+		//対象画像に対して用いたカーネルがsobelの時
 		case 1: 
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
 			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 			break;
+
+		//対象画像に対して用いたカーネルがgaus×sobelの時
 		case 2:
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
 			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3_s);
 			break;
+
+		//templateに対して用いたカーネルが回路応答の時
 		case 3:
 			sprintf(inputdate_directory_atan, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
 			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
+
+		//templateに対して用いたカーネルがsobelの時
 		case 4:
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
 			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
+
+		//templateに対して用いたカーネルがgaus×sobelの時
 		case 5:
 			sprintf(inputdate_directory_atan, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1t_s);
 			sprintf(Input_Filename_atan3, "%s%s", inputdate_directory_atan, Input_Filename_atan3t_s);
 			break;
+
+		//対象画像に対して用いたカーネルが回路応答の時
 		default :
 			sprintf(inputdate_directory_atan, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);
 			sprintf(Input_Filename_atan1, "%s%s", inputdate_directory_atan, Input_Filename_atan1_s);
@@ -119,6 +130,7 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 
 	//Outputディレクトリの作成
 	switch (paramerter[0]) {
+	//対象画像に対して用いたカーネルがsobelの時
 	case 1:
 		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
@@ -126,6 +138,8 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 		sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
 		sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s); 
 		break;
+
+	//対象画像に対して用いたカーネルがgaus×sobelの時
 	case 2:
 		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
@@ -133,6 +147,8 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 		sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
 		sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s); 
 		break;
+
+	//templateに対して用いたカーネルが回路応答の時
 	case 3:
 		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
@@ -140,20 +156,26 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
 		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
 		break;
+
+	//templateに対して用いたカーネルがsobelの時
 	case 4:
-		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
 		sprintf(math_atan5, "%s%s", date_directory4, math_atan5t_s);
 		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
 		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
 		break;
+
+	//templateに対して用いたカーネルがgaus×sobelの時
 	case 5:
-		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
+		sprintf(date_directory4, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1t_s);
 		sprintf(math_atan5, "%s%s", date_directory4, math_atan5t_s);
 		sprintf(math_atan8, "%s%s", date_directory4, math_atan8t_s);
 		sprintf(math_atan9, "%s%s", date_directory4, math_atan9t_s);
 		break;
+
+	//対象画像に対して用いたカーネルが回路応答の時
 	default:
 		sprintf(date_directory4, "%s%dk_atan_sd%d", date_directory, paramerter[paramerter_count], sd);
 		sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
@@ -167,15 +189,10 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 		printf("フォルダ %s を作成しました\n", date_directory4);
 	}
 	else {
-		printf("フォルダ作成に失敗しました。\n");
+		printf("フォルダ作成に失敗しました。またはすでに作成済みです．\n");
 	}
 
-	//Outputファイルのディレクトリ設定
-	//sprintf(math_atan1, "%s%s", date_directory4, math_atan1_s);
-	//sprintf(math_atan5, "%s%s", date_directory4, math_atan5_s);
-	//sprintf(math_atan8, "%s%s", date_directory4, math_atan8_s);
-	//sprintf(math_atan9, "%s%s", date_directory4, math_atan9_s);
-
+	
 ////////////////////////////ファイルの読み込み//////////////////////////////////////////////////////////////////////////////
 
 	//Inputファイルを開く
@@ -184,8 +201,8 @@ int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],in
 
 ////////////////////////エラー出力/////////////////////////////////////////////////////////////////////////////////////////////
 
-	if (!V_0) { cout << "入力エラー V(0).csvがありません"; return 1; }
-	if (!V_90) { cout << "入力エラー V(90).csvがありません"; return 1; }
+	if (!V_0) { cout << "入力エラー V(0).csvがありません\n"; return 1; }
+	if (!V_90) { cout << "入力エラー V(90).csvがありません\n"; return 1; }
 
 /////////////////////////出力ファイルを開く///////////////////////////////////////////////////////////////////////////////////
 	if ((fp_arctan = fopen(math_atan1, "w")) == NULL) {printf("出力ファイル : arctan.csvが開けません\n出力ファイルディレクトリ：%s\n",math_atan1); exit(1); }

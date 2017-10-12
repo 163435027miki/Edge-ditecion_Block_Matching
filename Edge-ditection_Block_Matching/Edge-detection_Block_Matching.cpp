@@ -16,10 +16,12 @@ using namespace std;
 #include "nrutil.h"	
 
 char *EdBM_name1_s = "Angle.csv";
-char *EdBM_name2_s = "threshold2.csv";
+//char *EdBM_name2_s = "threshold2.csv";
+char *EdBM_name2_s = "edge_st.csv";
 
 char *EdBM_name1t_s = "Anglet.csv";
-char *EdBM_name2t_s = "threshold2t.csv";
+//char *EdBM_name2t_s = "threshold2t.csv";
+char *EdBM_name2t_s = "edge_st_t.csv";
 
 char inputAngle_directory[255];
 
@@ -31,8 +33,8 @@ char inputthreshold2t_deta[128];
 //std::tuple<int, int, std::vector<std::vector<double>>>read_csv(const char *filename);
 int write_frame(char date_directory[], char Inputiamge[], int max_x, int max_y, int image_xt, int image_yt);
 
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[]) {
-	printf("****************************************\n");
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_ostu) {
+	printf("\n****************************************\n");
 	printf("start：Edge-detection_Block_Matching\n");
 	printf("****************************************\n");
 	
@@ -90,7 +92,7 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 		break;
 	case 4:
 	case 5:
-		sprintf(inputAngle_directory, "%s%d×%dsobel_cossim_sd%d\\", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		sprintf(inputAngle_directory, "%s%d×%dsobel_atan_sd%d\\", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 		break;
 	}
 
@@ -165,6 +167,9 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 	}
 
 ///////////////Edge-detection_Block_Matching//////////////////////////////////////////////////////////////////////////////
+
+	//arctanの場合は判別分析法で求めた閾値を用いる
+	if(paramerter[0]==4 || paramerter[0] == 5)threshold_EdBM = threshold_ostu;
 
 //thresholdのflag
 	for (int i = 0; i < image_yt; i++) {

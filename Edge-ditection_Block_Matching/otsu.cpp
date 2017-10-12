@@ -5,8 +5,6 @@
 #include<string>
 #include<sstream> //文字ストリーム
 #include<math.h>
-#include<time.h>//時間を用いる
-#include <direct.h>//フォルダを作成す
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
@@ -18,6 +16,8 @@
 
 using namespace cv;
 using namespace std;
+
+////////////////////////ヒストグラムの作成及び閾値の設定////////////////////////////////////////////////////////////////////////
 
 int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std::vector<std::vector<double>> &edge_st){
 
@@ -59,7 +59,7 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 	k = (max_data - min_data) / 256;
 	double k2;
 	int j_start=0;
-	printf("max_data=%f,min_data=%f,k=%f\n", max_data, min_data,k);
+//	printf("max_data=%f,min_data=%f,k=%f\n", max_data, min_data,k);
 
   /* ヒストグラム作成 */
   std::vector<int> hist(256, 0);  // 0-255の256段階のヒストグラム（要素数256、全て0で初期化）
@@ -79,14 +79,7 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
   for (int j = 0; j < 255; ++j) {
 	  printf("hist[%d]=%d\n", j,hist[j]);
   }
-  /*
-  for (int y = 0; y < image_y; ++y){
-    for (int x = 0; x < image_x; ++x){
-		hist[edge_st[x][y]]++;  // 輝度値を集計
-    }
-  }
-  */
-
+  
   //ヒストグラム描画
    int hist_max=0;
    for(int i=0;i<256;++i){
@@ -111,6 +104,7 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
    
   /* 判別分析法 */
   int t = 0;  // 閾値
+  double t2 = 0;	//実際の閾値
   double max = 0.0;  // w1 * w2 * (m1 - m2)^2 の最大値
   
   for (int i = 0; i < 256; ++i){
@@ -146,40 +140,21 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
   }
   
   
-  /* tの値を使って２値化 */
-  /*
-  for (int y = 0; y < image_y; ++y){
-    for (int x = 0; x < image_x; ++x){
-      if (src(y, x) < t)
-        dst(y, x) = 0;
-      else
-        dst(y, x) = 255;
-    }
-  }
-  */
-  printf("t=\n", t);
+  t2 = (k - 1)*t;
+//  printf("t=%d\nt2=%f\n", t,t2);
   
-  return t;
+  return t2;
 }
 
 
-
-int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], int &image_x, int &image_y){
+////////////////ファイルの読み込み/////////////////////////////////////////////////////////////////////////////////////////////////
+int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], char output_directory[], int &image_x, int &image_y,char &math_name1_s, char &Input_Filename1_s, char &Input_Filename3_s){
 	int image_width= image_x;						//入力画像の横幅
 	int image_wide=image_width+1;							//入力画像の横幅+1
 
 	int i=1,j=1;
-
-	//std::vector<double>edge_st(image_wide,0);
-	/*
-	vector<vector<double>>edge_st;
-	edge_st.resize(image_wide);
-	for(i=0;i<241;++i){
-		edge_st[i].resize(image_wide);
-	}
-	*/
 	
-
+	
 	double **V0 = matrix(0, image_x - 1, 0, image_y - 1);
 	double **V90 = matrix(0, image_x - 1, 0, image_y - 1);
 
@@ -201,8 +176,8 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], i
 	
 
 	//char *Input_Rvectormagniname_s = "\\Rvector_magni.csv";	//応答電圧の倍率
-	char *Input_Filename1_s = "\\V(0).csv";			//読み込むの指定
-	char *Input_Filename3_s = "\\V(90).csv";
+	//char *Input_Filename1_s = "\\V(0).csv";			//読み込むの指定
+	//char *Input_Filename3_s = "\\V(90).csv";
 	/*
 	char *Input_Filename2_s = "\\V(45).csv";
 	char *Input_Filename4_s = "\\V(135).csv";
@@ -229,8 +204,8 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], i
 	
 
 	//Input
-	sprintf(Input_Filename1, "%s%s", date_directory, Input_Filename1_s);
-	sprintf(Input_Filename3, "%s%s", date_directory, Input_Filename3_s);
+	sprintf(Input_Filename1, "%s%s", date_directory, &Input_Filename1_s);
+	sprintf(Input_Filename3, "%s%s", date_directory, &Input_Filename3_s);
 	printf("%s", Input_Filename1);
 	
 
@@ -275,22 +250,14 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], i
 		}
 	}
 	*/
-	FILE *fp_edge_st,*fp_outputV0,*fp_outputV90;
+	FILE *fp_edge_st;
 	char math_name1[128];
-	//char math_name2[64];
-	//char math_name3[64];
-	char *math_name1_s = "\\edge_st.csv";
-	//char *math_name2_s = "outputV0.csv";
-	//char *math_name3_s = "outputV90.csv";
-		//Output
-	sprintf(math_name1, "%s%s",date_directory, math_name1_s);
-	//	strcpy(math_name2, date_directory);
-	//	strcat(math_name2, math_name2_s);
-	//	strcpy(math_name3, date_directory);
-	//	strcat(math_name3, math_name3_s);
+
+	sprintf(math_name1, "%s%s", output_directory, &math_name1_s);
+	
+	
 		if((fp_edge_st=fopen(math_name1,"w"))==NULL){cout<<"入力エラー edge_st.csvが開けません";exit(1);}
-	//	if((fp_outputV0=fopen(math_name2,"w"))==NULL){cout<<"入力エラー outputV0.csvが開けません";exit(1);}
-	//	if((fp_outputV90=fopen(math_name3,"w"))==NULL){cout<<"入力エラー outputV90.csvが開けません";exit(1);}
+
 ///////////////////////応答電圧のcsvの読み込み//////////////////////////////////////////////////////////////////////////////////////////
 		i=1;
 		
@@ -388,55 +355,91 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], i
 }
 
 
-int otsu(char date_directory[], int &image_x, int &image_y,  int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd){
+////////////////入出力ディレクトリの設定////////////////////////////////////////////////////
+int IO_directory(char *inputdate_directory, char *outputdate_directory, char date_directory[], int paramerter[], int paramerter_count, int sd) {
+
+	switch (paramerter[0]) {
+	case 1:
+		sprintf(inputdate_directory, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		break;
+	case 2:
+		sprintf(inputdate_directory, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		break;
+	case 3:
+		sprintf(inputdate_directory, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%dk_cossim_sd%d", date_directory, paramerter[paramerter_count], sd);	
+		break;
+	case 4:
+		sprintf(inputdate_directory, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		break;
+	case 5:
+		sprintf(inputdate_directory, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%d×%dsobel_atan_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);
+		break;
+	default:
+		sprintf(inputdate_directory, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);	
+		sprintf(outputdate_directory, "%s%dk_cossim_sd%d", date_directory, paramerter[paramerter_count], sd);	
+		break;
+	}
+
+	return 0;
+}
+
+///////////////テンプレート画像の際の判別分析法//////////////////////////////////////////////////////////////
+int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd) {
 
 	char inputdate_directory[128];
+	char outputdate_directory[128];
 
-	if (paramerter[0] == 1 || paramerter[0] == 2) {
-		sprintf(inputdate_directory, "%s%d×%dsobel_conv_sd%d", date_directory, paramerter[paramerter_count], paramerter[paramerter_count], sd);	//入力する畳み込み結果の名前
+	char *Input_Filename1_s = "\\V(0)t.csv";			//読み込むの指定
+	char *Input_Filename3_s = "\\V(90)t.csv";
+	char *math_name1_s = "\\edge_st_t.csv";
+
+	//input,outputファイルのディレクトリ設定
+	IO_directory(inputdate_directory, outputdate_directory, date_directory, paramerter, paramerter_count, sd);
+
+	std::vector<std::vector<double>>edge_st;
+	edge_st.resize(image_xt);
+	for (int i = 0; i<image_xt; ++i) {
+		edge_st[i].resize(image_yt);
 	}
-	else {
-		sprintf(inputdate_directory, "%s%dk_conv_sd%d", date_directory, paramerter[paramerter_count], sd);	//入力する畳み込み結果の名前
-	}
+
+	readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+
+	return 0;
+
+
+}
+
+///////////////対象画像での判別分析法//////////////////////////////////////////////////////
+int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int paramerter_count, int sd){
+
+	char inputdate_directory[128];
+	char outputdate_directory[128];
+
+	//input,outputファイルのディレクトリ設定
+	IO_directory(inputdate_directory, outputdate_directory,date_directory,paramerter,paramerter_count, sd);
 	
-
+	//出力する値
 	std::vector<std::vector<double>>edge_st;
 	edge_st.resize(image_x);
 	for (int i = 0; i<image_x; ++i) {
 		edge_st[i].resize(image_y);
 	}
 
-	readfiles(edge_st, inputdate_directory, image_x, image_y);
+	char *Input_Filename1_s = "\\V(0).csv";			//読み込むの指定
+	char *Input_Filename3_s = "\\V(90).csv";
+	char *math_name1_s = "\\edge_st.csv";
+	readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y,*math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
 
-	/*
-	//Nrutilを用いたメモリの確保
-	double **edge_st = matrix(0, image_x - 1, 0, image_y - 1);
-	
-	//確保したメモリを初期化する
-	for (int i = 0; i < image_y; i++) {
-		for (int j = 0; j < image_x; j++) {
-			edge_st[j][i] = 0;
-		}
-	}
-	*/
+  double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
+ // printf("b=%f\n", b);
 
- // cv::Mat_<uchar> src = cv::imread("pen.png", 0);  // グレースケールで画像読み込み
- // cv::Mat_<uchar> src2 = cv::imread("pen.png", 0);  // グレースケールで画像読み込み
-  
-  //int a = cv::threshold(src, src, 0, 255, cv::THRESH_BINARY|cv::THRESH_OTSU);
-  int b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
-
-  //cvNamedWindow("image", CV_WINDOW_AUTOSIZE);
-  //cvShowImage("image", src);
-  //cv::imshow("result1", src);
-  //cv::imshow("result2", src2);
-
-  
- // std::cout << a << std::endl;
-  std::cout << "b="<<b << std::endl;
-
-  waitKey(0);
-  destroyAllWindows();
+//  waitKey(0);
+//  destroyAllWindows();
  
-  return 0;
+  return b;
 }

@@ -31,13 +31,9 @@ int notimeset(char date[], int pixel[], int Togire[], int z2, int z);
 int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[], char Inputimage[]);
 int cossim(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
 int arctan(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs,double threshold_EdBM, char Inputimage[]);
-int otsu(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd );
-//int cossim_result_row(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count_max,int sd_max);
-//int Bazen_kernel(char date_directory[], int &image_x, int &image_y,int paramerter[],int paramerter_count,int sd,char date[]);
-//int Bazen(char image_nameP2[],int &image_x,int &image_y,int paramerter[],int paramerter_count,int sd,char date[],char date_directory[]);
-
-
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs,double threshold_EdBM, char Inputimage[],double &threshold_ostu);
+int otsu(char date_directory[], int &image_x, int &image_y, int paramerter[], int paramerter_count, int sd );
+int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd);
 
 
 int main(int argc, char** argv){
@@ -46,9 +42,10 @@ int main(int argc, char** argv){
 	int Togire[10] = { 0,1,3,5,7,9,13,17 };
 	int Bs=5;
 	double threshold_EdBM=3;
+	double threshold_otsu = 0;
 	
 
-	int paramerter[4]={0,3,10,100};		//paramerter[0]=1でsobelフィルタ,paramerter[0]=2でgaus×sobelフィルタ
+	int paramerter[4]={1,3,10,100};		//paramerter[0]=1でsobelフィルタ,paramerter[0]=2でgaus×sobelフィルタ
 	int paramerter_count=0;
 
 	//for (int z2 = 1; z2 <= 7; ++z2) {		//pixel
@@ -80,41 +77,35 @@ int main(int argc, char** argv){
 					convolution(argc, argv, image_nameP2, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd, date, date_directory, Inputimage);
 					
 					printf("x=%d,y=%d\nxt=%d,yt=%d\n", image_x, image_y, image_xt, image_yt);
-					//マルチスレッド処理
-			//		std::thread t1(cossim, std::ref(date_directory), std::ref(image_x), std::ref(image_y), std::ref(paramerter), std::ref(paramerter_count), std::ref(sd), std::ref(date));
-			//		std::thread t2(arctan, std::ref(date_directory), std::ref(image_x), std::ref(image_y), std::ref(paramerter), std::ref(paramerter_count), std::ref(sd), std::ref(date));
-					//std::thread t3(Bazen_kernel, std::ref(date_directory), std::ref(image_x), std::ref(image_y), std::ref(paramerter), std::ref(paramerter_count), std::ref(sd), std::ref(date));
-			//		t1.join();
-			//		t2.join();
-				//	t3.join();
-					//マルチスレッド処理_終わり
-					
-
-					//単スレッド処理
-					cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-				//	arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-					//Bazen_kernel(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-
+				
+					//対象画像の角度推定
+					//cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+					arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+				
 					switch (paramerter[0]) {
-					case 1: paramerter[0] = 4;
-					case 2: paramerter[0] = 5;
-					default: paramerter[0] = 3;
+					case 1: paramerter[0] = 4; break;
+					case 2: paramerter[0] = 5; break;
+					default: paramerter[0] = 3; break;
 					}
-					//arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
-					cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
-
-					otsu(date_directory, image_x, image_y, image_xt, image_yt, paramerter, paramerter_count, sd);
 					
-					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage);
+					//テンプレート画像の角度推定
+					arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+				//	cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 
-				//	Bazen(image_nameP2,image_x,image_y,paramerter,paramerter_count,sd,date,date_directory);
+					threshold_otsu=otsu(date_directory, image_x, image_y, paramerter, paramerter_count, sd);
+
+					printf("threshold_otsu=%f\n", threshold_otsu);
+
+					edge_st_temp(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd);
+					
+					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage, threshold_otsu);
+
+				
 				}
 			}
 		//}
 	//}
-		//行のまとめ
-		//cossim_result_row(date_directory, image_x ,image_y,paramerter,paramerter_count_max,sd_max);
-
+		
 		printf("全ての処理が終了しました\n");
 
 		return 0;
