@@ -23,16 +23,23 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 
 	printf("%s\n",date_directory);
 	int DATA_NUM = image_x *image_y;
-	double tmp = 0;
+	double tmp_h = 0;
+	double tmp_l = 0;
 	double k;	//幅
 
 	//Nrutilを用いたメモリの確保
 	double **data = matrix(0, image_x *image_y-1, 0, 1);
+	double **tmp = matrix(0, image_y - 1, 0, 1);
 
 	//確保したメモリを初期化する
 	for (int i = 0; i < 1; i++) {
 		for (int j = 0; j < image_x *image_y; j++) {
 			data[j][i] = 0;
+		}
+	}
+	for (int i = 0; i < 1; i++) {
+		for (int j = 0; j < image_y - 1; j++) {
+			tmp[j][i] = 0;
 		}
 	}
 	//一次元配列に代入
@@ -41,22 +48,57 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 			data[j*(i+1)][0] = edge_st[j][i];
 		}
 	}
-	//データを大きい順に並び替える
-	for (int i = 1; i<DATA_NUM; i++)
-	{
-		for (int j = 0; j < DATA_NUM - i; j++)
+	//行ごとにデータを大きい順に並び替える
+//#pragma omp parallel for
+	for (int i = 0; i < image_y; ++i) {
+		for (int k = 1; k < image_x; k++)
 		{
-			if (data[j][0] > data[j + 1][0])
+			for (int j = 0; j < image_x - k; j++)
 			{
-				tmp = data[j][0];
-				data[j][0] = data[j + 1][0];
-				data[j + 1][0] = tmp;
+				if (edge_st[j][i] > edge_st[j + 1][i])
+				{
+					tmp[i][0] = edge_st[j][i];
+					edge_st[j][i] = edge_st[j + 1][i];
+					edge_st[j + 1][i] = tmp[i][0];
+				}
+			}
+		}
+			printf("edge_st[image_x-1][i]=%f\n", edge_st[image_x - 1][i]);
+	}
+
+//#pragma omp parallel for
+	for (int i = 1; i<image_y; i++)
+	{
+		for (int j = 0; j < image_y - i; j++)
+		{
+			if (edge_st[image_x - 1][j] > edge_st[image_x - 1][j + 1])
+			{
+				tmp_h = edge_st[image_x - 1][j];
+				edge_st[image_x - 1][j] = edge_st[image_x - 1][j + 1];
+				edge_st[image_x - 1][j + 1] = tmp_h;
+			}
+		}
+		
+	}
+
+	for (int i = 1; i<image_y; i++)
+	{
+		for (int j = 0; j < image_y - i; j++)
+		{
+			if (edge_st[0][j] < edge_st[0][j + 1])
+			{
+				tmp_l = edge_st[0][j];
+				edge_st[0][j] = edge_st[0][j + 1];
+				edge_st[0][j + 1] = tmp_l;
 			}
 		}
 	}
-	double max_data = data[DATA_NUM - 1][0];
-	double min_data =  data[0][0];
+
+	double max_data = edge_st[image_x - 1][image_y-1];
+	double min_data = edge_st[0][image_y - 1];
 	k = (max_data - min_data) / 256;
+	
+	printf("max_data=%f,min_data=%fk=%f\n\n", max_data, min_data,k);
 	double k2;
 	int j_start=0;
 //	printf("max_data=%f,min_data=%f,k=%f\n", max_data, min_data,k);
@@ -70,22 +112,23 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 		  
 		  if (data[i][0] > k*j && data[i][0] < k*(j + 1)) {
 			  hist[j]++;
-			  j_start = j;
-			  break;
+			//  j_start = j;
+			//  break;
 		  }
 	  }
 
   }
+  /*
   for (int j = 0; j < 255; ++j) {
 	  printf("hist[%d]=%d\n", j,hist[j]);
   }
-  
+  */
   //ヒストグラム描画
    int hist_max=0;
    for(int i=0;i<256;++i){
 	   if(hist[i]>hist_max)hist_max=hist[i];
    }
-   printf("hist_max=%d\n",hist_max);
+  // printf("hist_max=%d\n",hist_max);
 
    float histf[256];
    for (int i = 0; i < 256; ++i){
@@ -140,8 +183,12 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
   }
   
   
-  t2 = (k - 1)*t;
-//  printf("t=%d\nt2=%f\n", t,t2);
+  t2 = k*(t-1);
+  //printf("t=%d\nt2=%f\n", t,t2);
+
+  free_matrix(data, 0, DATA_NUM - 1, 0, 1);
+  //  free_matrix(tmp, 0, DATA_NUM - 1, 0, 1);
+  free_matrix(tmp, 0, image_y - 1, 0, 1);
   
   return t2;
 }
@@ -328,7 +375,7 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 			V315[count_small]=Rvectormagni[8]*V315[count_small];
 			*/
 
-			edge_st[count_small][count_large]=pow(V0[count_small][count_large],2)+pow(V90[count_small][count_large],2);
+			edge_st[count_small][count_large]=sqrt(pow(V0[count_small][count_large],2)+pow(V90[count_small][count_large],2));
 			++count_small;
 		}
 	++count_large;
@@ -408,9 +455,10 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 	}
 
 	readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+	double b = discriminantAnalysis(inputdate_directory, image_xt, image_yt, edge_st);
 
-	return 0;
-
+	//return 0;
+	return b;
 
 }
 
@@ -435,11 +483,12 @@ int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int
 	char *math_name1_s = "\\edge_st.csv";
 	readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y,*math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
 
-  double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
- // printf("b=%f\n", b);
+  //double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
+ // printf("b=%e\n", b);
 
 //  waitKey(0);
 //  destroyAllWindows();
  
-  return b;
+	return 0;
+  //return b;
 }

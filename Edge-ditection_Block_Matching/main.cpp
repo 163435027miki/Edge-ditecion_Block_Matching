@@ -92,11 +92,13 @@ int main(int argc, char** argv){
 					arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 				//	cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 
-					threshold_otsu=otsu(date_directory, image_x, image_y, paramerter, paramerter_count, sd);
+					otsu(date_directory, image_x, image_y, paramerter, paramerter_count, sd);
+
+					
+
+					threshold_otsu = edge_st_temp(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd);
 
 					printf("threshold_otsu=%f\n", threshold_otsu);
-
-					edge_st_temp(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd);
 					
 					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage, threshold_otsu);
 
