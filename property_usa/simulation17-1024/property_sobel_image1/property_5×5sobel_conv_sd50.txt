@@ -1,0 +1,11 @@
+..\\bmp\\image\\image1_t.bmp
+..\\Rvector\\5Å~5sobel_under
+..\\bmp\\image\\image1_sd50.bmp
+..\\filter\\5Å~5sobel\\sobel0.txt
+..\\filter\\5Å~5sobel\\sobel45.txt
+..\\filter\\5Å~5sobel\\sobel90.txt
+..\\filter\\5Å~5sobel\\sobel135.txt
+..\\filter\\5Å~5sobel\\sobel180.txt
+..\\filter\\5Å~5sobel\\sobel225.txt
+..\\filter\\5Å~5sobel\\sobel270.txt
+..\\filter\\5Å~5sobel\\sobel315.txt

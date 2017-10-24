@@ -45,7 +45,7 @@ int main(int argc, char** argv){
 	double threshold_otsu = 0;
 	
 
-	int paramerter[4]={1,3,10,100};		//paramerter[0]=1でsobelフィルタ,paramerter[0]=2でgaus×sobelフィルタ
+	int paramerter[4]={0,3,10,100};		//paramerter[0]=1でsobelフィルタ,paramerter[0]=2でgaus×sobelフィルタ
 	int paramerter_count=0;
 
 	//for (int z2 = 1; z2 <= 7; ++z2) {		//pixel
@@ -61,14 +61,17 @@ int main(int argc, char** argv){
 				//for (sd = 0; sd <= 0; sd = sd + 10) {
 
 					if (paramerter[0] == 1 || paramerter[0] == 2) {
-						sprintf(image_nameP, "..\\property_usa\\property_3k_conv_",paramerter[paramerter_count],paramerter[paramerter_count]);
+					//	sprintf(image_nameP, "..\\property_usa\\property_3k_conv_", paramerter[paramerter_count]);
+					//	sprintf(image_nameP, "..\\property_usa\\property_%d×%dsobel_conv_", paramerter[paramerter_count], paramerter[paramerter_count]);
+						sprintf(image_nameP, "..\\property_usa\\simulation17-1024\\property_sobel_image1\\property_%d×%dsobel_conv_",paramerter[paramerter_count], paramerter[paramerter_count]);
 					//	sprintf(image_nameP, "..\\property_usa\\simulation17-0725\\sobel\\15-%dp-%dT_sobel", pixel[z2], Togire[z], paramerter[paramerter_count]);
 						sprintf(image_nameP2, "%ssd%d.txt", image_nameP, sd);
 						//sprintf(image_nameP2, "%s\\property_%d×%dsobel_conv_sd%d.txt", image_nameP, paramerter[paramerter_count], paramerter[paramerter_count], sd);
 					}
 					else {
 						//sprintf(image_nameP, "..\\property_usa\\simulation17-0821\\kernel\\15-%dp-%dT\\property_%dk_conv_", pixel[z2], Togire[z], paramerter[paramerter_count]);
-						sprintf(image_nameP,"..\\property_usa\\property_3k_conv_", paramerter[paramerter_count]);
+						sprintf(image_nameP,"..\\property_usa\\simulation17-1024\\property_kernel_image1\\property_%dk_conv_", paramerter[paramerter_count]);
+					//	sprintf(image_nameP, "..\\property_usa\\property_3k_conv_", paramerter[paramerter_count]);
 						sprintf(image_nameP2, "%ssd%d.txt", image_nameP, sd);
 						//sprintf(image_nameP, "..\\property_usa\\simulation17-0824-2\\property_B135");
 						//sprintf(image_nameP2, "%s.txt", image_nameP);
@@ -79,8 +82,8 @@ int main(int argc, char** argv){
 					printf("x=%d,y=%d\nxt=%d,yt=%d\n", image_x, image_y, image_xt, image_yt);
 				
 					//対象画像の角度推定
-					//cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
-					arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+					cossim(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
+					//arctan(date_directory,image_x,image_y,paramerter,paramerter_count,sd,date);
 				
 					switch (paramerter[0]) {
 					case 1: paramerter[0] = 4; break;
@@ -89,8 +92,8 @@ int main(int argc, char** argv){
 					}
 					
 					//テンプレート画像の角度推定
-					arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
-				//	cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+				//	arctan(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
+					cossim(date_directory, image_xt, image_yt, paramerter, paramerter_count, sd, date);
 
 					otsu(date_directory, image_x, image_y, paramerter, paramerter_count, sd);
 
@@ -100,6 +103,7 @@ int main(int argc, char** argv){
 
 					printf("threshold_otsu=%f\n", threshold_otsu);
 					
+					//arctanを用いる場合は，otsuで求めたthreshold_otsuをthreshold_EdBMに代入して閾値として用いるようにしている．
 					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage, threshold_otsu);
 
 				

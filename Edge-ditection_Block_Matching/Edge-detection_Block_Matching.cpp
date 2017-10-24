@@ -33,7 +33,7 @@ char inputthreshold2t_deta[128];
 //std::tuple<int, int, std::vector<std::vector<double>>>read_csv(const char *filename);
 int write_frame(char date_directory[], char Inputiamge[], int max_x, int max_y, int image_xt, int image_yt);
 
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_ostu) {
+int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_otsu) {
 	printf("\n****************************************\n");
 	printf("start：Edge-detection_Block_Matching\n");
 	printf("****************************************\n");
@@ -168,8 +168,18 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 
 ///////////////Edge-detection_Block_Matching//////////////////////////////////////////////////////////////////////////////
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 	//arctanの場合は判別分析法で求めた閾値を用いる
-	if(paramerter[0]==4 || paramerter[0] == 5)threshold_EdBM = threshold_ostu;
+	//if(paramerter[0]==4 || paramerter[0] == 5)threshold_EdBM = threshold_otsu;
+
+	threshold_EdBM = threshold_otsu;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 //thresholdのflag
 	for (int i = 0; i < image_yt; i++) {
@@ -263,10 +273,29 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 		}
 	}
 
-	printf("max_x=%d,max_y=%d", max_x, max_y);
+	printf("max_x=%d,max_y=%d\n", max_x, max_y);
 	
 
 	write_frame(date_directory, Inputiamge, max_x, max_y, image_xt, image_yt);
+
+//////////////////////////////logの作成///////////////////////////////////////////////////////////////////////////////////
+	FILE *fp_date_Matching;
+	char filename_log_Matching[128];
+	//sprintf(filename_log, "..\\log\\log-%2d-%02d%02d-%02d%02d%02d.txt",pnow->tm_year+1900,pnow->tm_mon + 1,pnow->tm_mday,pnow->tm_hour,pnow->tm_min,pnow->tm_sec);	//logファイル作成のディレクトリ指定
+	sprintf(filename_log_Matching, "%s\\log_Matching.txt", date_directory);	//logファイル作成のディレクトリ指定
+	if ((fp_date_Matching = fopen(filename_log_Matching, "w")) == NULL) { printf("logファイルが開けません"); exit(1); }
+	fprintf(fp_date_Matching, "領域の座標：(x,y)=(%d,%d),(%d,%d)\n", max_x, max_y, max_x+ image_xt, max_y+ image_yt);
+	fprintf(fp_date_Matching, "ブロックサイズ：x=%d,y=%d\n", image_xt, image_yt); 
+	fprintf(fp_date_Matching, "threshold_otsu=%lf\n", threshold_otsu);
+	if (threshold_EdBM == threshold_otsu) {
+		fprintf(fp_date_Matching, "判別分析法を用いた：threshold_otsu=%lf\n", threshold_otsu);
+	}
+	else {
+		fprintf(fp_date_Matching, "自分で設定した閾値を用いた：threshold_EdBM=%lf\n", threshold_EdBM);
+	}
+	
+	fclose(fp_date_Matching);
+	printf("logファイル %s を保存しました\n", filename_log_Matching);
 
 
 	//メモリの解放

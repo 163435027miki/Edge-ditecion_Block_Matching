@@ -211,40 +211,11 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 			V90[j][i] = 0;
 		}
 	}
-	/*
-	double V45[255];
-	double V135[255];
-	double V180[255];
-	double V225[255];
-	double V270[255];
-	double V315[255];
-	*/
-
 	
-
-	//char *Input_Rvectormagniname_s = "\\Rvector_magni.csv";	//応答電圧の倍率
-	//char *Input_Filename1_s = "\\V(0).csv";			//読み込むの指定
-	//char *Input_Filename3_s = "\\V(90).csv";
-	/*
-	char *Input_Filename2_s = "\\V(45).csv";
-	char *Input_Filename4_s = "\\V(135).csv";
-	char *Input_Filename5_s = "\\V(180).csv";
-	char *Input_Filename6_s = "\\V(225).csv";
-	char *Input_Filename7_s = "\\V(270).csv";
-	char *Input_Filename8_s = "\\V(315).csv";
-	*/
-
 	char Input_Rvectormagni_name[255];
 	char Input_Filename1[255];						//入力ファイル名・入力元の設定
 	char Input_Filename3[255];
-	/*
-	char Input_Filename2[255];
-	char Input_Filename4[255];
-	char Input_Filename5[255];
-	char Input_Filename6[255];
-	char Input_Filename7[255];
-	char Input_Filename8[255];
-	*/
+	
 
 	double Rvectormagni[10];						//応答電圧の倍率
 
@@ -257,46 +228,15 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 	
 
 ////////////////////////////ファイルの読み込み//////////////////////////////////////////////////////////////////////////////
-	//Input
-	//ifstream Rvector_magni(Input_Rvectormagni_name);
-
+	
 	ifstream V_0(Input_Filename1);
 	ifstream V_90(Input_Filename3);
 
-	/*
-	ifstream V_45(Input_Filename2);
-	ifstream V_135(Input_Filename4);
-	ifstream V_180(Input_Filename5);
-	ifstream V_225(Input_Filename6);
-	ifstream V_270(Input_Filename7);
-	ifstream V_315(Input_Filename8);
-	*/
-	//if(!Rvector_magni){cout<<"入力エラー Rvector_magni.csvがありません";return 1;}
 	
 	if(!V_0){cout<<"入力エラー V(0).csvがありません";return 1;}
 	if(!V_90){cout<<"入力エラー V(90).csvがありません";return 1;}
 	
-	/*
-	if (!V_45) { cout << "入力エラー V(45).csvがありません"; return 1; }
-	if(!V_135){cout<<"入力エラー V(135).csvがありません";return 1;}
-	if(!V_180){cout<<"入力エラー V(180).csvがありません";return 1;}
-	if(!V_225){cout<<"入力エラー V(225).csvがありません";return 1;}
-	if(!V_270){cout<<"入力エラー V(270).csvがありません";return 1;}
-	if(!V_315){cout<<"入力エラー V(315).csvがありません";return 1;}
-	*/
-	/*
-	string str_Rvector_magni;
-	i=1;
-	while (getline(Rvector_magni,str_Rvector_magni)){
-		string token_Rvector_magni;
-		istringstream stream(str_Rvector_magni);
-		while(getline(stream,token_Rvector_magni,',')){
-			double temp_Rvector_magni=stof(token_Rvector_magni); //stof(string str) : stringをfloatに変換
-			Rvectormagni[i]=temp_Rvector_magni;
-			i++;
-		}
-	}
-	*/
+	
 	FILE *fp_edge_st;
 	char math_name1[128];
 
@@ -320,16 +260,10 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
         string token_V_0;
         istringstream stream_V_0(str_0);
 		getline(V_90, str_90);	string token_V_90;	istringstream stream_V_90(str_90);
-		/*
-		getline(V_45,str_45);	string token_V_45;	istringstream stream_V_45(str_45);
-		getline(V_135,str_135);	string token_V_135;	istringstream stream_V_135(str_135);
-		getline(V_180,str_180);	string token_V_180;	istringstream stream_V_180(str_180);
-		getline(V_225,str_225);	string token_V_225;	istringstream stream_V_225(str_225);
-		getline(V_270,str_270);	string token_V_270;	istringstream stream_V_270(str_270);
-		getline(V_315,str_315);	string token_V_315;	istringstream stream_V_315(str_315);
-		*/
+		
+		
 
-		//////////////////////////配列に代入//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////配列に代入//////////////////////////////////////////////////////////////////////////////////////////////////
 
         while(getline(stream_V_0,token_V_0,',')){	//一行読み取る．V0のみ，繰り返しの範囲指定に用いる
 			double tmp_V_0=stof(token_V_0);			//文字を数字に変換
@@ -343,38 +277,6 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 			V90[count_small][count_large]=tmp_V_90;
 			//V90[count_small]=Rvectormagni[3]*V90[count_small];
 
-			/*
-			getline(stream_V_45, token_V_45, ',');
-			double tmp_V_45 = stof(token_V_45);
-			V45[count_small] = tmp_V_45;
-			V45[count_small] = Rvectormagni[2] * V45[count_small];
-
-			getline(stream_V_135,token_V_135,',');
-			double tmp_V_135=stof(token_V_135);
-			V135[count_small]=tmp_V_135;
-			V135[count_small]=Rvectormagni[4]*V135[count_small];
-
-			getline(stream_V_180,token_V_180,',');
-			double tmp_V_180=stof(token_V_180);
-			V180[count_small]=tmp_V_180;
-			V180[count_small]=Rvectormagni[5]*V180[count_small];
-
-			getline(stream_V_225,token_V_225,',');
-			double tmp_V_225=stof(token_V_225);
-			V225[count_small]=tmp_V_225;
-			V225[count_small]=Rvectormagni[6]*V225[count_small];
-
-			getline(stream_V_270,token_V_270,',');
-			double tmp_V_270=stof(token_V_270);
-			V270[count_small]=tmp_V_270;
-			V270[count_small]=Rvectormagni[7]*V270[count_small];
-
-			getline(stream_V_315,token_V_315,',');
-			double tmp_V_315=stof(token_V_315);
-			V315[count_small]=tmp_V_315; 
-			V315[count_small]=Rvectormagni[8]*V315[count_small];
-			*/
-
 			edge_st[count_small][count_large]=sqrt(pow(V0[count_small][count_large],2)+pow(V90[count_small][count_large],2));
 			++count_small;
 		}
@@ -384,21 +286,249 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 		}
 		for(j=0;j<image_y;++j){
 	for(i=0;i<image_x;++i){
-			//edge_st[i][j]=pow(V0[j],2)+pow(V90[j],2);
-
 		fprintf(fp_edge_st,"%lf,",edge_st[i][j]);
 		if(i==image_width-1){fprintf(fp_edge_st,"\n");}
 		}
 		}
 		fclose(fp_edge_st);
-	//	fclose(fp_outputV0);
-	//	fclose(fp_outputV90);
+	
 		
 		//return edge_st;
 		free_matrix(V0, 0, image_x - 1, 0, image_y - 1);
 		free_matrix(V90, 0, image_x - 1, 0, image_y - 1);
 		
 		
+}
+
+////////////////ファイルの読み込み　ただし，8方向を閾値に用いる場合/////////////////////////////////////////////////////////////////////////////////////////////////
+int readfiles_8dire(
+	std::vector<std::vector<double>> &edge_st, 
+	char date_directory[], 
+	char output_directory[], 
+	int &image_x, 
+	int &image_y, 
+	char &math_name1_s, 
+	char &Input_Filename1_s, 
+	char &Input_Filename2_s,
+	char &Input_Filename3_s,
+	char &Input_Filename4_s,
+	char &Input_Filename5_s,
+	char &Input_Filename6_s,
+	char &Input_Filename7_s,
+	char &Input_Filename8_s
+	) {
+	int image_width = image_x;						//入力画像の横幅
+	int image_wide = image_width + 1;							//入力画像の横幅+1
+
+	int i = 1, j = 1;
+
+
+	double **V0 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V45 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V90 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V135 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V180 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V225 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V270 = matrix(0, image_x - 1, 0, image_y - 1);
+	double **V315 = matrix(0, image_x - 1, 0, image_y - 1);
+
+	for (i = 0; i < image_y; i++) {
+		for (j = 0; j < image_x; j++) {
+			V0[j][i] = 0;
+			V45[j][i] = 0;
+			V90[j][i] = 0;
+			V135[j][i] = 0;
+			V180[j][i] = 0;
+			V225[j][i] = 0;
+			V270[j][i] = 0;
+			V315[j][i] = 0;
+		}
+	}
+	
+
+	//char *Input_Rvectormagniname_s = "\\Rvector_magni.csv";	//応答電圧の倍率
+	
+
+	char Input_Rvectormagni_name[255];
+	char Input_Filename1[255];						//入力ファイル名・入力元の設定
+	char Input_Filename2[255];
+	char Input_Filename3[255];
+	char Input_Filename4[255];
+	char Input_Filename5[255];
+	char Input_Filename6[255];
+	char Input_Filename7[255];
+	char Input_Filename8[255];
+	
+
+	double Rvectormagni[10];						//応答電圧の倍率
+
+
+
+													//Input
+	sprintf(Input_Filename1, "%s%s", date_directory, &Input_Filename1_s);
+	sprintf(Input_Filename2, "%s%s", date_directory, &Input_Filename2_s);
+	sprintf(Input_Filename3, "%s%s", date_directory, &Input_Filename3_s);
+	sprintf(Input_Filename4, "%s%s", date_directory, &Input_Filename4_s);
+	sprintf(Input_Filename5, "%s%s", date_directory, &Input_Filename5_s);
+	sprintf(Input_Filename6, "%s%s", date_directory, &Input_Filename6_s);
+	sprintf(Input_Filename7, "%s%s", date_directory, &Input_Filename7_s);
+	sprintf(Input_Filename8, "%s%s", date_directory, &Input_Filename8_s);
+	printf("%s", Input_Filename1);
+
+
+	////////////////////////////ファイルの読み込み//////////////////////////////////////////////////////////////////////////////
+	//Input
+	//ifstream Rvector_magni(Input_Rvectormagni_name);
+
+	ifstream V_0(Input_Filename1);
+	ifstream V_45(Input_Filename2);
+	ifstream V_90(Input_Filename3);
+	ifstream V_135(Input_Filename4);
+	ifstream V_180(Input_Filename5);
+	ifstream V_225(Input_Filename6);
+	ifstream V_270(Input_Filename7);
+	ifstream V_315(Input_Filename8);
+	
+	//if(!Rvector_magni){cout<<"入力エラー Rvector_magni.csvがありません";return 1;}
+
+	if (!V_0) { cout << "入力エラー V(0).csvがありません"; return 1; }
+	if (!V_45) { cout << "入力エラー V(45).csvがありません"; return 1; }
+	if (!V_90) { cout << "入力エラー V(90).csvがありません"; return 1; }
+	if(!V_135){cout<<"入力エラー V(135).csvがありません";return 1;}
+	if(!V_180){cout<<"入力エラー V(180).csvがありません";return 1;}
+	if(!V_225){cout<<"入力エラー V(225).csvがありません";return 1;}
+	if(!V_270){cout<<"入力エラー V(270).csvがありません";return 1;}
+	if(!V_315){cout<<"入力エラー V(315).csvがありません";return 1;}
+	
+	/*
+	string str_Rvector_magni;
+	i=1;
+	while (getline(Rvector_magni,str_Rvector_magni)){
+	string token_Rvector_magni;
+	istringstream stream(str_Rvector_magni);
+	while(getline(stream,token_Rvector_magni,',')){
+	double temp_Rvector_magni=stof(token_Rvector_magni); //stof(string str) : stringをfloatに変換
+	Rvectormagni[i]=temp_Rvector_magni;
+	i++;
+	}
+	}
+	*/
+	FILE *fp_edge_st;
+	char math_name1[128];
+
+	sprintf(math_name1, "%s%s", output_directory, &math_name1_s);
+
+
+	if ((fp_edge_st = fopen(math_name1, "w")) == NULL) { cout << "入力エラー edge_st.csvが開けません"; exit(1); }
+
+	///////////////////////応答電圧のcsvの読み込み//////////////////////////////////////////////////////////////////////////////////////////
+	i = 1;
+
+	string str_0, str_45, str_90, str_135, str_180, str_225, str_270, str_315;
+	int count_large = 0;
+	while (getline(V_0, str_0)) {					//このループ内ですべてを行う
+		int count_small = 0;			//初期化
+
+
+
+
+										///////////////いろいろ定義．ここでやらないといけない///////////////////////////////////////////////////////////////////////////
+		string token_V_0;
+		istringstream stream_V_0(str_0);
+		getline(V_90, str_90);	string token_V_90;	istringstream stream_V_90(str_90);
+		getline(V_45,str_45);	string token_V_45;	istringstream stream_V_45(str_45);
+		getline(V_135,str_135);	string token_V_135;	istringstream stream_V_135(str_135);
+		getline(V_180,str_180);	string token_V_180;	istringstream stream_V_180(str_180);
+		getline(V_225,str_225);	string token_V_225;	istringstream stream_V_225(str_225);
+		getline(V_270,str_270);	string token_V_270;	istringstream stream_V_270(str_270);
+		getline(V_315,str_315);	string token_V_315;	istringstream stream_V_315(str_315);
+	
+
+		//////////////////////////配列に代入//////////////////////////////////////////////////////////////////////////////////////////////////
+
+		while (getline(stream_V_0, token_V_0, ',')) {	//一行読み取る．V0のみ，繰り返しの範囲指定に用いる
+			double tmp_V_0 = stof(token_V_0);			//文字を数字に変換
+			V0[count_small][count_large] = tmp_V_0;				//配列に代入
+																//V0[count_small]=Rvectormagni[1]*V0[count_small];
+
+
+
+			getline(stream_V_90, token_V_90, ',');
+			double tmp_V_90 = stof(token_V_90);
+			V90[count_small][count_large] = tmp_V_90;
+			//V90[count_small]=Rvectormagni[3]*V90[count_small];
+
+			
+			getline(stream_V_45, token_V_45, ',');
+			double tmp_V_45 = stof(token_V_45);
+			V45[count_small][count_large] = tmp_V_45;
+			//V45[count_small] = Rvectormagni[2] * V45[count_small];
+
+			getline(stream_V_135,token_V_135,',');
+			double tmp_V_135=stof(token_V_135);
+			V135[count_small][count_large] =tmp_V_135;
+			//V135[count_small]=Rvectormagni[4]*V135[count_small];
+
+			getline(stream_V_180,token_V_180,',');
+			double tmp_V_180=stof(token_V_180);
+			V180[count_small][count_large] =tmp_V_180;
+			//V180[count_small]=Rvectormagni[5]*V180[count_small];
+
+			getline(stream_V_225,token_V_225,',');
+			double tmp_V_225=stof(token_V_225);
+			V225[count_small][count_large] =tmp_V_225;
+			//V225[count_small]=Rvectormagni[6]*V225[count_small];
+
+			getline(stream_V_270,token_V_270,',');
+			double tmp_V_270=stof(token_V_270);
+			V270[count_small][count_large] =tmp_V_270;
+			//V270[count_small]=Rvectormagni[7]*V270[count_small];
+
+			getline(stream_V_315,token_V_315,',');
+			double tmp_V_315=stof(token_V_315);
+			V315[count_small][count_large] =tmp_V_315;
+			//V315[count_small]=Rvectormagni[8]*V315[count_small];
+			
+			//ここを変える
+			edge_st[count_small][count_large] 
+				= sqrt(pow(V0[count_small][count_large], 2) 
+					+ pow(V45[count_small][count_large], 2) 
+					+ pow(V90[count_small][count_large], 2)
+					+ pow(V135[count_small][count_large], 2)
+					+ pow(V180[count_small][count_large], 2)
+					+ pow(V225[count_small][count_large], 2)
+					+ pow(V270[count_small][count_large], 2)
+					+ pow(V315[count_small][count_large], 2)
+				);
+			++count_small;
+		}
+		++count_large;
+
+
+	}
+	for (j = 0; j<image_y; ++j) {
+		for (i = 0; i<image_x; ++i) {
+			//edge_st[i][j]=pow(V0[j],2)+pow(V90[j],2);
+
+			fprintf(fp_edge_st, "%lf,", edge_st[i][j]);
+			if (i == image_width - 1) { fprintf(fp_edge_st, "\n"); }
+		}
+	}
+	fclose(fp_edge_st);
+	//	fclose(fp_outputV0);
+	//	fclose(fp_outputV90);
+
+	//return edge_st;
+	free_matrix(V0, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V45, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V90, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V135, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V180, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V225, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V270, 0, image_x - 1, 0, image_y - 1);
+	free_matrix(V315, 0, image_x - 1, 0, image_y - 1);
+
+
 }
 
 
@@ -442,7 +572,13 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 	char outputdate_directory[128];
 
 	char *Input_Filename1_s = "\\V(0)t.csv";			//読み込むの指定
+	char *Input_Filename2_s = "\\V(45)t.csv";
 	char *Input_Filename3_s = "\\V(90)t.csv";
+	char *Input_Filename4_s = "\\V(135)t.csv";
+	char *Input_Filename5_s = "\\V(180)t.csv";
+	char *Input_Filename6_s = "\\V(225)t.csv";
+	char *Input_Filename7_s = "\\V(270)t.csv";
+	char *Input_Filename8_s = "\\V(315)t.csv";
 	char *math_name1_s = "\\edge_st_t.csv";
 
 	//input,outputファイルのディレクトリ設定
@@ -454,7 +590,10 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 		edge_st[i].resize(image_yt);
 	}
 
-	readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+	//readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+
+	//8方向使う場合
+	readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s ,*Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s );
 	double b = discriminantAnalysis(inputdate_directory, image_xt, image_yt, edge_st);
 
 	//return 0;

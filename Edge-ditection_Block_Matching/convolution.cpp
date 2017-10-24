@@ -181,6 +181,8 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	if (Rvector_create == 1)printf("基準ベクトル取得座標：X=%d，Y=%d\n", Rvector_pointX, Rvector_pointY);
 	printf("InputImage=%s\n", InputImage);
 	printf("画像サイズ：X=%d，Y=%d\n", image_x, image_y);
+	printf("Inputtemplate=%s\n", Inputtemplate);
+	printf("画像サイズ：X=%d，Y=%d\n", image_xt, image_yt);
 	//printf("fs=%d\n", fs);
 	printf("Offset=%d\n", Offset);
 	printf("Upper_threshold : %f, Under_threshold : %f\n", Upper_threshold, Under_threshold);
@@ -275,10 +277,15 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 		//read_filter(inputfilter_directory,fs,spfil1);	//フィルタの読み込み
 		std::tie(fs, spfil1_kari) = read_filter(inputfilter_directory);
 		
+
+		
 		for (fy = 1; fy <= fs; fy++) {
 			for (fx = 1; fx <= fs; fx++) {
 				//fscanf(fp, "%lf	", &spfil1[fx][fy]);
+			//	printf("fs=%d,",fs);
+			//	printf("%lf\n", spfil1_kari[fx - 1][fy - 1]);
 				spfil1[fx][fy] = spfil1_kari[fx-1][fy-1];
+			//	printf("%lf,", spfil1[fx][fy]);
 			}
 		}
 		
