@@ -1,10 +1,9 @@
 ﻿  Edge-detection_Block_Matching.cpp
   コード生成しています。
-d:\visual studio 2015\projects\edge-ditecion_block_matching\edge-ditection_block_matching\otsu.cpp(301): warning C4715: 'readfiles': 値を返さないコントロール パスがあります。
-d:\visual studio 2015\projects\edge-ditecion_block_matching\edge-ditection_block_matching\otsu.cpp(532): warning C4715: 'readfiles_8dire': 値を返さないコントロール パスがあります。
-  11 of 539 functions ( 2.0%) were compiled, the rest were copied from previous compilation.
+d:\visual studio 2015\projects\edge-ditecion_block_matching\edge-ditection_block_matching\otsu.cpp(575): warning C4715: 'readfiles_8dire': 値を返さないコントロール パスがあります。
+  15 of 539 functions ( 2.8%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    3 functions had inline decision re-evaluated but remain unchanged
+    4 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.exe
   Edge-ditection_Block_Matching.vcxproj -> D:\Visual Studio 2015\Projects\Edge-ditecion_Block_Matching\x64\Release\Edge-ditection_Block_Matching.pdb (Full PDB)

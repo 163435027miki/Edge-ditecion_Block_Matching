@@ -36,6 +36,7 @@ int otsu(char date_directory[], int &image_x, int &image_y, int paramerter[], in
 int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd);
 
 
+
 int main(int argc, char** argv){
 
 	int pixel[10]={0,1,3,5,7,9,13,17};
@@ -105,6 +106,8 @@ int main(int argc, char** argv){
 					
 					//arctanを用いる場合は，otsuで求めたthreshold_otsuをthreshold_EdBMに代入して閾値として用いるようにしている．
 					Edge_detection_Block_Matching(date_directory, image_x, image_y, image_xt, image_yt ,paramerter, paramerter_count, sd, date,Bs, threshold_EdBM, Inputimage, threshold_otsu);
+
+					
 
 				
 				}

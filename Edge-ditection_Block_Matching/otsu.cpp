@@ -17,9 +17,27 @@
 using namespace cv;
 using namespace std;
 
-////////////////////////ヒストグラムの作成及び閾値の設定////////////////////////////////////////////////////////////////////////
+int hist_hozon(char date_directory[], double k,std::vector<int> &hist) {
 
+	FILE *fp_hist;
+	char hist_csv_directroy[128];
+	sprintf(hist_csv_directroy, "%s_hist.csv", date_directory);
+	if ((fp_hist = fopen(hist_csv_directroy, "w")) == NULL) { printf("histファイルが開けません"); exit(1); }
+
+	fprintf(fp_hist, "i,hist,bin\n");
+	for (int i = 0; i < 256; ++i) {
+		fprintf(fp_hist, "%d,%d,%f\n", i, hist[i],k*i);
+	}
+
+	fclose(fp_hist);
+}
+
+////////////////////////ヒストグラムの作成及び閾値の設定////////////////////////////////////////////////////////////////////////
 int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std::vector<std::vector<double>> &edge_st){
+
+	printf("****************************************\n");
+	printf("start： 判別分析法\n");
+	printf("****************************************\n");
 
 	printf("%s\n",date_directory);
 	int DATA_NUM = image_x *image_y;
@@ -63,7 +81,7 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 				}
 			}
 		}
-			printf("edge_st[image_x-1][i]=%f\n", edge_st[image_x - 1][i]);
+			//printf("edge_st[image_x-1][%d]=%f\n", i,edge_st[image_x - 1][i]);
 	}
 
 //#pragma omp parallel for
@@ -110,39 +128,53 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 	 // printf("j_start=%d\n", j_start);
 	  for (int j = j_start; j < 255; ++j) {
 		  
-		  if (data[i][0] > k*j && data[i][0] < k*(j + 1)) {
+		  if (data[i][0] >= k*j && data[i][0] < k*(j + 1)) {
 			  hist[j]++;
+			 // printf("j=%d,i=%d\n", j,i);
 			//  j_start = j;
 			//  break;
 		  }
 	  }
-
+	 
   }
   /*
   for (int j = 0; j < 255; ++j) {
 	  printf("hist[%d]=%d\n", j,hist[j]);
   }
   */
+  hist_hozon(date_directory, k,hist);
+
   //ヒストグラム描画
    int hist_max=0;
-   for(int i=0;i<256;++i){
+   //hist[0]を表示しない
+  // for(int i=0;i<256;++i){
+   for (int i = 1; i<256; ++i) {
 	   if(hist[i]>hist_max)hist_max=hist[i];
    }
   // printf("hist_max=%d\n",hist_max);
 
    float histf[256];
-   for (int i = 0; i < 256; ++i){
+   //hist[0]を表示しない
+   // for(int i=0;i<256;++i){
+   for (int i = 1; i<256; ++i) {
 	   histf[i]=hist[i]/(float)hist_max;
 	   //printf("histf=%f",histf[i]);
    }
 
-   Mat hist_image= Mat(Size(276,320),CV_8UC3,Scalar(255,255,255));
+   Mat hist_image= Mat(Size(276,140),CV_8UC3,Scalar(255,255,255));
 	rectangle(hist_image,Point(10,20),Point(265,100),Scalar(220,220,220),-1);
-	 for(int i=0;i<256;i++){
+	//hist[0]を表示しない
+	// for(int i=0;i<256;++i){
+	for (int i = 1; i<256; ++i) {
 	 line(hist_image,Point(10+i,100),Point(10+i,100-(float)(histf[i])*80),Scalar(0,0,255),1,8,0);
 	}
 	namedWindow("ヒストグラム");
 	imshow("ヒストグラム",hist_image);
+
+	//ヒストグラム画像の保存
+	char hist_directory[128]; 
+	sprintf(hist_directory, "%s_hist.bmp", date_directory);
+	imwrite(hist_directory, hist_image);
 
    
   /* 判別分析法 */
@@ -193,8 +225,13 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
   return t2;
 }
 
-
-////////////////ファイルの読み込み/////////////////////////////////////////////////////////////////////////////////////////////////
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+////////////////ファイルの読み込み_2方向のみ//////////////////////////////////////////////////////
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
 int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], char output_directory[], int &image_x, int &image_y,char &math_name1_s, char &Input_Filename1_s, char &Input_Filename3_s){
 	int image_width= image_x;						//入力画像の横幅
 	int image_wide=image_width+1;							//入力画像の横幅+1
@@ -300,7 +337,13 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 		
 }
 
-////////////////ファイルの読み込み　ただし，8方向を閾値に用いる場合/////////////////////////////////////////////////////////////////////////////////////////////////
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+////////////////ファイルの読み込み_8方向//////////////////////////////////////////////////////
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
 int readfiles_8dire(
 	std::vector<std::vector<double>> &edge_st, 
 	char date_directory[], 
@@ -590,10 +633,12 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 		edge_st[i].resize(image_yt);
 	}
 
+	//2方向使う場合
 	//readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
 
 	//8方向使う場合
 	readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s ,*Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s );
+	printf("8方向でエッジ強度を求めます\n");
 	double b = discriminantAnalysis(inputdate_directory, image_xt, image_yt, edge_st);
 
 	//return 0;
@@ -617,13 +662,26 @@ int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int
 		edge_st[i].resize(image_y);
 	}
 
-	char *Input_Filename1_s = "\\V(0).csv";			//読み込むの指定
-	char *Input_Filename3_s = "\\V(90).csv";
+	char *Input_Filename1_s = "\\V(0)t.csv";			//読み込むの指定
+	char *Input_Filename2_s = "\\V(45)t.csv";
+	char *Input_Filename3_s = "\\V(90)t.csv";
+	char *Input_Filename4_s = "\\V(135)t.csv";
+	char *Input_Filename5_s = "\\V(180)t.csv";
+	char *Input_Filename6_s = "\\V(225)t.csv";
+	char *Input_Filename7_s = "\\V(270)t.csv";
+	char *Input_Filename8_s = "\\V(315)t.csv";
 	char *math_name1_s = "\\edge_st.csv";
-	readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y,*math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
 
-  //double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
- // printf("b=%e\n", b);
+	//2方向使う場合
+	//readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y,*math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+
+	//8方向使う場合
+	readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_x, image_y, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s, *Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s);
+	printf("8方向でエッジ強度を求めます\n");
+
+	//対象画像で閾値を求める
+	//double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
+	//printf("b=%e\n", b);
 
 //  waitKey(0);
 //  destroyAllWindows();

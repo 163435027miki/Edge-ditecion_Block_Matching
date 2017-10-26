@@ -293,6 +293,7 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 	else {
 		fprintf(fp_date_Matching, "自分で設定した閾値を用いた：threshold_EdBM=%lf\n", threshold_EdBM);
 	}
+	fprintf(fp_date_Matching, "ヒストグラムに成分0を表示していません\n閾値を求めるためには用いています\n");
 	
 	fclose(fp_date_Matching);
 	printf("logファイル %s を保存しました\n", filename_log_Matching);
