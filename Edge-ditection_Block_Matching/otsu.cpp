@@ -609,7 +609,7 @@ int IO_directory(char *inputdate_directory, char *outputdate_directory, char dat
 }
 
 ///////////////テンプレート画像の際の判別分析法//////////////////////////////////////////////////////////////
-int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd) {
+int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd,int &Edge_derectory_number) {
 
 	char inputdate_directory[128];
 	char outputdate_directory[128];
@@ -632,13 +632,24 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 	for (int i = 0; i<image_xt; ++i) {
 		edge_st[i].resize(image_yt);
 	}
+	switch (Edge_derectory_number) {
+		//2方向使う場合
+		case 2:
+			readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+			printf("\n2方向でエッジ強度を求めます\n");
+			break;
 
-	//2方向使う場合
-	//readfiles(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+		//8方向使う場合
+		case 8:
+			readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s ,*Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s );
+			printf("\n8方向でエッジ強度を求めます\n");
+			break;
 
-	//8方向使う場合
-	readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_xt, image_yt, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s ,*Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s );
-	printf("8方向でエッジ強度を求めます\n");
+		default:
+			printf("Edge_derectory_numberがおかしい\nEdge_derectory_number=%d\n", Edge_derectory_number);
+			return 0;
+		}
+
 	double b = discriminantAnalysis(inputdate_directory, image_xt, image_yt, edge_st);
 
 	//return 0;
@@ -647,7 +658,7 @@ int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int parame
 }
 
 ///////////////対象画像での判別分析法//////////////////////////////////////////////////////
-int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int paramerter_count, int sd){
+int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int paramerter_count, int sd, int &Edge_derectory_number){
 
 	char inputdate_directory[128];
 	char outputdate_directory[128];
@@ -672,12 +683,23 @@ int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int
 	char *Input_Filename8_s = "\\V(315)t.csv";
 	char *math_name1_s = "\\edge_st.csv";
 
-	//2方向使う場合
-	//readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y,*math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+	switch (Edge_derectory_number) {
+		//2方向使う場合
+		case 2:
+			readfiles(edge_st, inputdate_directory, outputdate_directory, image_x, image_y, *math_name1_s, *Input_Filename1_s, *Input_Filename3_s);
+			printf("\n2方向でエッジ強度を求めます\n");
+			break;
 
-	//8方向使う場合
-	readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_x, image_y, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s, *Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s);
-	printf("8方向でエッジ強度を求めます\n");
+		//8方向使う場合
+		case 8:
+			readfiles_8dire(edge_st, inputdate_directory, outputdate_directory, image_x, image_y, *math_name1_s, *Input_Filename1_s, *Input_Filename2_s, *Input_Filename3_s, *Input_Filename4_s, *Input_Filename5_s, *Input_Filename6_s, *Input_Filename7_s, *Input_Filename8_s);
+			printf("\n8方向でエッジ強度を求めます\n");
+			break;
+
+		default:
+			printf("Edge_derectory_numberがおかしい\nEdge_derectory_number=%d\n", Edge_derectory_number);
+			return 0;
+	}
 
 	//対象画像で閾値を求める
 	//double b = discriminantAnalysis(inputdate_directory,image_x,image_y, edge_st);
