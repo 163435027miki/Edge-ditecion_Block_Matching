@@ -1,0 +1,11 @@
+..\\bmp\\simulation17-1218\\template\\18.bmp
+..\\Rvector\\5Å~5sobel_under
+..\\bmp\\simulation17-1218\\inputimage\\18_sd0.bmp
+..\\filter\\5Å~5sobel\\sobel0.txt
+..\\filter\\5Å~5sobel\\sobel45.txt
+..\\filter\\5Å~5sobel\\sobel90.txt
+..\\filter\\5Å~5sobel\\sobel135.txt
+..\\filter\\5Å~5sobel\\sobel180.txt
+..\\filter\\5Å~5sobel\\sobel225.txt
+..\\filter\\5Å~5sobel\\sobel270.txt
+..\\filter\\5Å~5sobel\\sobel315.txt

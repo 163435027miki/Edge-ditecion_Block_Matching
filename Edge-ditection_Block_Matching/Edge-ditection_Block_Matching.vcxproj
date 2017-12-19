@@ -159,6 +159,7 @@
     <ClCompile Include="Nrutil.cpp" />
     <ClCompile Include="otsu.cpp" />
     <ClCompile Include="read_txt.cpp" />
+    <ClCompile Include="score.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="write_frame.cpp" />
   </ItemGroup>

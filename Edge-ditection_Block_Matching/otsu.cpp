@@ -33,7 +33,7 @@ int hist_hozon(char date_directory[], double k,std::vector<int> &hist) {
 }
 
 ////////////////////////ヒストグラムの作成及び閾値の設定////////////////////////////////////////////////////////////////////////
-int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std::vector<std::vector<double>> &edge_st){
+double discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std::vector<std::vector<double>> &edge_st){
 
 	printf("****************************************\n");
 	printf("start： 判別分析法\n");
@@ -168,8 +168,8 @@ int discriminantAnalysis(char date_directory[], int &image_x, int &image_y, std:
 	for (int i = 1; i<256; ++i) {
 	 line(hist_image,Point(10+i,100),Point(10+i,100-(float)(histf[i])*80),Scalar(0,0,255),1,8,0);
 	}
-	namedWindow("ヒストグラム");
-	imshow("ヒストグラム",hist_image);
+//	namedWindow("ヒストグラム");
+//	imshow("ヒストグラム",hist_image);
 
 	//ヒストグラム画像の保存
 	char hist_directory[128]; 
@@ -270,8 +270,8 @@ int readfiles(std::vector<std::vector<double>> &edge_st,char date_directory[], c
 	ifstream V_90(Input_Filename3);
 
 	
-	if(!V_0){cout<<"入力エラー V(0).csvがありません";return 1;}
-	if(!V_90){cout<<"入力エラー V(90).csvがありません";return 1;}
+	if(!V_0){cout<<"入力エラー V(0).csvがありません";exit(1);}
+	if(!V_90){cout<<"入力エラー V(90).csvがありません";exit(1);}
 	
 	
 	FILE *fp_edge_st;
@@ -609,7 +609,7 @@ int IO_directory(char *inputdate_directory, char *outputdate_directory, char dat
 }
 
 ///////////////テンプレート画像の際の判別分析法//////////////////////////////////////////////////////////////
-int edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd,int &Edge_derectory_number) {
+double edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd,int &Edge_derectory_number) {
 
 	char inputdate_directory[128];
 	char outputdate_directory[128];

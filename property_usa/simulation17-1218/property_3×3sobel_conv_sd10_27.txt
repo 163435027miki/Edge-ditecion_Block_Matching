@@ -1,0 +1,11 @@
+..\\bmp\\simulation17-1218\\template\\27.bmp
+..\\Rvector\\3Å~3sobel_under
+..\\bmp\\simulation17-1218\\inputimage\\27_sd10.bmp
+..\\filter\\3Å~3sobel\\sobel0.txt
+..\\filter\\3Å~3sobel\\sobel45.txt
+..\\filter\\3Å~3sobel\\sobel90.txt
+..\\filter\\3Å~3sobel\\sobel135.txt
+..\\filter\\3Å~3sobel\\sobel180.txt
+..\\filter\\3Å~3sobel\\sobel225.txt
+..\\filter\\3Å~3sobel\\sobel270.txt
+..\\filter\\3Å~3sobel\\sobel315.txt

@@ -31,9 +31,9 @@ char inputthreshold2_deta[128];
 char inputthreshold2t_deta[128];
 
 //std::tuple<int, int, std::vector<std::vector<double>>>read_csv(const char *filename);
-int write_frame(char date_directory[], char Inputiamge[], int max_x, int max_y, int image_xt, int image_yt);
+int write_frame(char date_directory[], char Inputiamge[],  std::vector<int> max_x, std::vector<int> max_y, int image_xt, int image_yt, int count_tied_V_vote, int V_vote_max);
 
-int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_otsu) {
+std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_otsu) {
 	printf("\n****************************************\n");
 	printf("start：Edge-detection_Block_Matching\n");
 	printf("****************************************\n");
@@ -108,10 +108,10 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 	ifstream threshold2_f(inputthreshold2_deta);
 	ifstream threshold2t_f(inputthreshold2t_deta);
 
-	if (!Angle_f) { printf("入力エラー Angle.csvがありません_Edge-detection_Block_Matching_filename=%s", inputAngle_deta); return 1; }
-	if (!Anglet_f) { printf("入力エラー Anglet.csvがありません_Edge-detection_Block_Matching_filename=%s", inputAnglet_deta); return 1; }
-	if (!threshold2_f) { printf("入力エラー threshold2.csvがありません_Edge-detection_Block_Matching_filename=%s", inputthreshold2_deta); return 1; }
-	if (!threshold2t_f) { printf("入力エラー threshold2t.csvがありません_Edge-detection_Block_Matching_filename=%s", inputthreshold2t_deta); return 1; }
+	if (!Angle_f) { printf("入力エラー Angle.csvがありません_Edge-detection_Block_Matching_filename=%s", inputAngle_deta); exit(1); }
+	if (!Anglet_f) { printf("入力エラー Anglet.csvがありません_Edge-detection_Block_Matching_filename=%s", inputAnglet_deta); exit(1); }
+	if (!threshold2_f) { printf("入力エラー threshold2.csvがありません_Edge-detection_Block_Matching_filename=%s", inputthreshold2_deta); exit(1); }
+	if (!threshold2t_f) { printf("入力エラー threshold2t.csvがありません_Edge-detection_Block_Matching_filename=%s", inputthreshold2t_deta); exit(1); }
 	
 	int count_large = 0;
 	int count_small = 0;
@@ -257,9 +257,14 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 		}
 	}
 
-	double max_V;
-	int max_x=0, max_y=0;
+	double max_V=0;
+	int hajime_count = 0;
+	int count_tied_V_vote = 0;
+	std::vector<int> max_x;
+	std::vector<int> max_y;//求める座標
+	//int max_x = 0, max_y = 0;
 	max_V = V[0][0];
+	/*
 	for (int y = 0; y < image_y - image_yt; y++) {
 		for (int x = 0; x < image_x - image_xt; x++) {
 			
@@ -272,19 +277,46 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 
 		}
 	}
+	*/
+	for (int y = 0; y < image_y - image_yt; y++) {
+		for (int x = 0; x < image_x - image_xt; x++) {
 
+			if (V[x][y] > max_V) {
+				hajime_count = 1;
+				count_tied_V_vote = 1;
+				max_x.resize(count_tied_V_vote);
+				max_y.resize(count_tied_V_vote);
+
+				max_V = V[x][y];
+				max_x[0] = x;
+				max_y[0] = y;
+				//printf("V[%d][%d]=%f,", x, y, V[x][y]);
+			}
+			if (V[x][y] == max_V &&hajime_count != 1) {
+				max_x.resize(count_tied_V_vote + 1);
+				max_y.resize(count_tied_V_vote + 1);
+				max_x[count_tied_V_vote] = x;
+				max_y[count_tied_V_vote] = y;
+				++count_tied_V_vote;
+			}
+
+			hajime_count = 0;
+		}
+	}
 	printf("max_x=%d,max_y=%d\n", max_x, max_y);
 	
 
-	write_frame(date_directory, Inputiamge, max_x, max_y, image_xt, image_yt);
-
+	//write_frame(date_directory, Inputiamge, max_x, max_y, image_xt, image_yt);
+	write_frame(date_directory, Inputiamge, max_x, max_y, image_xt, image_yt, count_tied_V_vote, max_V);
 //////////////////////////////logの作成///////////////////////////////////////////////////////////////////////////////////
 	FILE *fp_date_Matching;
 	char filename_log_Matching[128];
 	//sprintf(filename_log, "..\\log\\log-%2d-%02d%02d-%02d%02d%02d.txt",pnow->tm_year+1900,pnow->tm_mon + 1,pnow->tm_mday,pnow->tm_hour,pnow->tm_min,pnow->tm_sec);	//logファイル作成のディレクトリ指定
 	sprintf(filename_log_Matching, "%s\\log_Matching.txt", date_directory);	//logファイル作成のディレクトリ指定
 	if ((fp_date_Matching = fopen(filename_log_Matching, "w")) == NULL) { printf("logファイルが開けません"); exit(1); }
-	fprintf(fp_date_Matching, "領域の座標：(x,y)=(%d,%d),(%d,%d)\n", max_x, max_y, max_x+ image_xt, max_y+ image_yt);
+	for (int i = 0; i < count_tied_V_vote; ++i) {
+		fprintf(fp_date_Matching, "領域の座標：(x,y)=(%d,%d),(%d,%d)\n", max_x[i], max_y[i], max_x[i] + image_xt, max_y[i] + image_yt);
+	}
 	fprintf(fp_date_Matching, "ブロックサイズ：x=%d,y=%d\n", image_xt, image_yt); 
 	fprintf(fp_date_Matching, "threshold_otsu=%lf\n", threshold_otsu);
 	if (threshold_EdBM == threshold_otsu) {
@@ -309,5 +341,7 @@ int Edge_detection_Block_Matching(char date_directory[], int &image_x, int &imag
 	free_matrix(V, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
 
 	
-	return 0;
+
+	
+	return std::forward_as_tuple(max_x, max_y, count_tied_V_vote, max_V);
 }

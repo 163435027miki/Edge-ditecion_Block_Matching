@@ -105,6 +105,7 @@ std::tuple<int,std::vector<std::vector<double>>> read_filter(char inputfilter_di
 int convolution_gaus_sobel(int &image_y,int &image_x,int fs, int hfs,double *output1[],double *spfil1[],double *input_bmp[],double magnification);
 
 void read_filter_gaus(int fs,double *spfil1_g[]);
+void convolution_calculation(int &image_y, int &image_x, int fs, int hfs, double *output1[], double *spfil1[], double *input_bmp[], double magnification);
 
 int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &image_y, int &image_xt, int &image_yt, int paramerter[],int paramerter_count,int sd,char date[],char date_directory[], char InputImage[]) {
 
@@ -299,7 +300,7 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 		if(paramerter[0]==2){
 		convolution_gaus_sobel(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
 		}else{
-		convolution(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
+			convolution_calculation(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
 		}
 		//ファイルへの書き込み
 		write_file(Filename,image_x,image_y,output1,Rvector_create,Rvector_pointX,Rvector_pointY,Rvector,Rvector_number);	
@@ -311,7 +312,7 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 		if (paramerter[0] == 2) {
 			convolution_gaus_sobel(image_yt, image_xt, fs, hfs, output2, spfil1, input_bmp2, magnification);
 		}else{
-			convolution(image_yt, image_xt, fs, hfs, output2, spfil1, input_bmp2, magnification);
+			convolution_calculation(image_yt, image_xt, fs, hfs, output2, spfil1, input_bmp2, magnification);
 		}
 		//ファイルへの書き込み
 		write_file(Filenamet, image_xt, image_yt, output2, Rvector_create, Rvector_pointX, Rvector_pointY, Rvector, Rvector_number);
@@ -608,7 +609,7 @@ void write_file(char *Filename,int &image_x,int &image_y,double *output1[],int R
 }
 
 ///////////////////////畳み込み演算//////////////////////////////////////////////////
-void convolution(int &image_y, int &image_x, int fs, int hfs, double *output1[], double *spfil1[], double *input_bmp[], double magnification) {
+void convolution_calculation(int &image_y, int &image_x, int fs, int hfs, double *output1[], double *spfil1[], double *input_bmp[], double magnification) {
 	
 
 	//#pragma omp parallel num_threads(4)
