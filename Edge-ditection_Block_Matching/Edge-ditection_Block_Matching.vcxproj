@@ -160,8 +160,10 @@
     <ClCompile Include="otsu.cpp" />
     <ClCompile Include="read_txt.cpp" />
     <ClCompile Include="score.cpp" />
+    <ClCompile Include="Spline.cpp" />
     <ClCompile Include="time.cpp" />
     <ClCompile Include="write_frame.cpp" />
+    <ClCompile Include="Eight-ditection_Block_matching.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Nrutil.h" />

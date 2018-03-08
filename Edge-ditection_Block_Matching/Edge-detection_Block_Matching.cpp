@@ -32,8 +32,52 @@ char inputthreshold2t_deta[128];
 
 //std::tuple<int, int, std::vector<std::vector<double>>>read_csv(const char *filename);
 int write_frame(char date_directory[], char Inputiamge[],  std::vector<int> max_x, std::vector<int> max_y, int image_xt, int image_yt, int count_tied_V_vote, int V_vote_max);
+int msectime();
 
-std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_otsu) {
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////最大のV_voteとその座標を求める////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+std::tuple<std::vector<int>, std::vector<int>, double, int> max_v_vote_calculate(double **V_vote, int image_x, int image_y, int image_xt, int image_yt) {
+
+	std::vector<int> max_x;
+	std::vector<int> max_y;
+	int hajime_count = 0;
+	double max_V = 0;
+	int count_tied_V_vote = 0;
+	max_V = V_vote[0][0];
+
+	for (int y = 0; y < image_y - image_yt; y++) {
+		for (int x = 0; x < image_x - image_xt; x++) {
+
+			if (V_vote[x][y] > max_V) {
+				hajime_count = 1;
+				count_tied_V_vote = 1;
+				max_x.resize(count_tied_V_vote);
+				max_y.resize(count_tied_V_vote);
+
+				max_V = V_vote[x][y];
+				max_x[0] = x;
+				max_y[0] = y;
+				//printf("V[%d][%d]=%f,", x, y, V[x][y]);
+			}
+			if (V_vote[x][y] == max_V &&hajime_count != 1) {
+				max_x.resize(count_tied_V_vote + 1);
+				max_y.resize(count_tied_V_vote + 1);
+				max_x[count_tied_V_vote] = x;
+				max_y[count_tied_V_vote] = y;
+				++count_tied_V_vote;
+			}
+
+			hajime_count = 0;
+		}
+	}
+
+	hajime_count = 0;
+	return std::forward_as_tuple(max_x, max_y, count_tied_V_vote, max_V);
+
+}
+
+std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Matching(char date_directory[], int &image_x, int &image_y, int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd, char date[],int Bs, double threshold_EdBM, char Inputiamge[], double &threshold_otsu,int &frame_allowable_error, double &use_threshold_flag) {
 	printf("\n****************************************\n");
 	printf("start：Edge-detection_Block_Matching\n");
 	printf("****************************************\n");
@@ -55,7 +99,7 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 	int bn = 0;
 
 	double **CB = matrix(0, image_x - image_xt- 1, 0, image_y - image_yt - 1);
-	double **V = matrix(0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+	double **V_vote = matrix(0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
 
 	double min_CB;
 	int min_x, min_y;
@@ -79,7 +123,7 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 	for (int i = 0; i < image_y - image_yt; i++) {
 		for (int j = 0; j < image_x - image_xt; j++) {
 			CB[j][i] = 0;
-			V[j][i] = 0;
+			V_vote[j][i] = 0;
 		}
 	}
 
@@ -174,10 +218,11 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 
 
 	//arctanの場合は判別分析法で求めた閾値を用いる
-	//if(paramerter[0]==4 || paramerter[0] == 5)threshold_EdBM = threshold_otsu;
-
-	threshold_EdBM = threshold_otsu;
-
+	//threshold_EdBM = threshold_otsu;
+	
+	
+	if(use_threshold_flag==0)threshold_EdBM = 0;
+	if (use_threshold_flag == 1)threshold_EdBM = threshold_otsu;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -252,11 +297,83 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 				}
 			}
 			//printf("x=%d,y=%d,%f\n", min_x, min_y,min_CB);
-			V[min_x][min_y] += 1;
+			V_vote[min_x][min_y] += 1;
 			
 		}
 	}
 
+
+	double **V_vote2 = matrix(0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+	//初期化
+	for (int i = 0; i < image_y - image_yt; i++) {
+		for (int j = 0; j < image_x - image_xt; j++) {
+			V_vote2[j][i] = 0;
+		}
+	}
+
+	double max_V = 0;
+	int count_tied_V_vote = 0;
+
+	std::vector<int>max_x;
+	std::vector<int>max_y;
+	//最大のV_voteの座標とその値を求める
+	std::tie(max_x, max_y, count_tied_V_vote, max_V) = max_v_vote_calculate(V_vote, image_x, image_y, image_xt, image_yt);
+
+
+	//複数の枠を統合する
+	//int frame_allowable_error = 5;
+	if (frame_allowable_error != 0 && count_tied_V_vote != 1) {
+		//全ブロックに対して
+		//±frame_allowable_errorの範囲を取る
+		for (int i = 0; i < count_tied_V_vote + 1; ++i) {
+			for (int k = -frame_allowable_error; k < frame_allowable_error + 1; ++k) {
+				for (int l = -frame_allowable_error; l < frame_allowable_error + 1; ++l) {
+					if (max_y[i] + l >= 0 && max_y[i] + l < image_y - image_yt) {
+						if (max_x[i] + k >= 0 && max_x[i] + k < image_x - image_xt) {
+							V_vote2[max_x[i]][max_y[i]] += V_vote[max_x[i] + k][max_y[i] + l];
+						}
+					}
+				}
+			}
+		}
+		//v_voteに入れなおす
+		for (int i = 0; i < image_y - image_yt; i++) {
+			for (int j = 0; j < image_x - image_xt; j++) {
+				V_vote[j][i] = V_vote2[j][i];
+			}
+		}
+
+
+		free_matrix(V_vote2, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+		max_V = 0;
+		count_tied_V_vote = 0;
+		int hajime_count = 0;
+
+		max_V = V_vote[0][0];
+		max_x.resize(1);
+		max_y.resize(1);
+		std::tie(max_x, max_y, count_tied_V_vote, max_V) = max_v_vote_calculate(V_vote, image_x, image_y, image_xt, image_yt);
+
+		int count_tied_number = 0;
+		if (count_tied_V_vote != 1) {
+			for (int i = 0; i < count_tied_V_vote + 1; ++i) {
+
+				if (max_x[i] - max_x[0] <= 2 * frame_allowable_error && max_y[i] - max_y[0] <= 2 * frame_allowable_error) {
+					max_x[i] = max_x[0];
+					max_y[i] = max_y[0];
+					++count_tied_number;
+					//ここでcount_tied_V_voteを変更する
+					if (i = count_tied_V_vote && count_tied_number == count_tied_V_vote + 1) {
+						count_tied_V_vote = 1;
+						max_x.resize(count_tied_V_vote);
+						max_y.resize(count_tied_V_vote);
+					}
+				}
+
+			}
+		}
+	}
+	/*
 	double max_V=0;
 	int hajime_count = 0;
 	int count_tied_V_vote = 0;
@@ -277,7 +394,7 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 
 		}
 	}
-	*/
+	
 	for (int y = 0; y < image_y - image_yt; y++) {
 		for (int x = 0; x < image_x - image_xt; x++) {
 
@@ -303,6 +420,7 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 			hajime_count = 0;
 		}
 	}
+	*/
 	printf("max_x=%d,max_y=%d\n", max_x, max_y);
 	
 
@@ -338,7 +456,7 @@ std::tuple<std::vector<int>, std::vector<int>, int, int> Edge_detection_Block_Ma
 	free_matrix(threshold2t, 0, image_xt - 1, 0, image_yt - 1);
 	free_matrix(threshold_tMAP, 0, image_xt - 1, 0, image_yt - 1);
 	free_matrix(CB, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
-	free_matrix(V, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
+	free_matrix(V_vote, 0, image_x - image_xt - 1, 0, image_y - image_yt - 1);
 
 	
 

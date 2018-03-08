@@ -1,7 +1,7 @@
 #include<time.h>//時間を用いる
 #include <direct.h>//フォルダを作成す
 #include<sstream> //文字ストリーム
-
+#include <windows.h>
 
 int timeset(char date[]){
 //実行日時の表示
@@ -50,4 +50,22 @@ int notimeset(char date[], int pixel[], int Togire[], int z2, int z) {
 	printf(date);
 	printf("\n");
 	return *date;
+}
+
+int msectime()
+{
+	int GetmsecTime;
+	SYSTEMTIME st;
+	GetSystemTime(&st);
+	char szTime[25] = { 0 };
+	// wHourを９時間足して、日本時間にする
+	sprintf(szTime, "%02d%02d%02d%03d",
+
+		st.wHour + 9, st.wMinute, st.wSecond, st.wMilliseconds);
+
+	GetmsecTime = strtod(szTime, NULL);
+	//printf("%s\n", szTime);
+	//printf("%d\n", GetmsecTime);
+	//return szTime;
+	return GetmsecTime;
 }

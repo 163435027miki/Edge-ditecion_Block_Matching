@@ -19,7 +19,7 @@ int write_frame(char date_directory[], char Inputiamge[],  std::vector<int> max_
 	cv::imshow(windowName, ImputImageR);
 
 	//‰æ‘œ•Û‘¶
-	sprintf(result_image_name,"%sresult_image.bmp", date_directory);
+	sprintf(result_image_name,"%sresult_image_%d.bmp", date_directory, V_vote_max);
 	imwrite(result_image_name, ImputImageR);
 
 	cv::waitKey(20);

@@ -20,7 +20,7 @@
 
 #include <tuple>
 std::tuple<int, int, std::vector<std::vector<double>>> read_txt(const char *filename);
-
+int msectime();
 using namespace std;
 
 int conv_eco_mode_flag = 1;
@@ -119,6 +119,9 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	sprintf(propety_dire_char,"..\\property_usa\\simulation17-0203\\Rvector\\8dire_100k\\property_8dire_100k_I~%d.txt",filter_number);
 	std::ifstream propety_dire(propety_dire_char);*/
 	
+	int t_convolution_s[8];
+	int t_convolution_e[8];
+
 	//閾値の設定．今後property.txtに加えるかも
 	int Offset = 128;
 	double magnification = 1;
@@ -147,13 +150,13 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	}
 
 	//多値画像を作成する
-	Save_image_flag[2][0] = 1;		//多値画像を作成するとき1
+	Save_image_flag[2][0] = 0;		//多値画像を作成するとき1
 
 
 	//8方向に画像を作成する
 	for (int i = 1; i <= 8; ++i) {
 
-		Save_image_flag[2][i] = 1;	//作成したい方向の画像の選択．iを指定
+		Save_image_flag[2][i] = 0;	//作成したい方向の画像の選択．iを指定
 	}
 
 	
@@ -298,9 +301,13 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 
 		//畳み込み
 		if(paramerter[0]==2){
-		convolution_gaus_sobel(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
+			t_convolution_s[kernel_number] = msectime();
+			convolution_gaus_sobel(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
+			t_convolution_e[kernel_number] = msectime();
 		}else{
+			t_convolution_s[kernel_number] = msectime();
 			convolution_calculation(image_y,image_x,fs,hfs,output1,spfil1,input_bmp,magnification);
+			t_convolution_e[kernel_number] = msectime();
 		}
 		//ファイルへの書き込み
 		write_file(Filename,image_x,image_y,output1,Rvector_create,Rvector_pointX,Rvector_pointY,Rvector,Rvector_number);	
@@ -372,6 +379,11 @@ int convolution(int argc, char** argv,char image_nameP2[],int &image_x,int &imag
 	fprintf(fp_date, "V225 = %s\n", inputfilter_directory6);
 	fprintf(fp_date, "V270 = %s\n", inputfilter_directory7);
 	fprintf(fp_date, "V315 = %s\n", inputfilter_directory8);
+	fprintf(fp_date, "convolution_time\n");
+	for (int i = 0; i < 8; ++i) {
+		fprintf(fp_date, "%d\t%d\n",t_convolution_s[i],t_convolution_e[i]);
+	}
+
 	fclose(fp_date);
 	printf("logファイル %s を保存しました\n", filename_log);
 	

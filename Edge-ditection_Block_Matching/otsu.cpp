@@ -16,6 +16,7 @@
 
 using namespace cv;
 using namespace std;
+int msectime();
 
 int hist_hozon(char date_directory[], double k,std::vector<int> &hist) {
 
@@ -609,7 +610,7 @@ int IO_directory(char *inputdate_directory, char *outputdate_directory, char dat
 }
 
 ///////////////テンプレート画像の際の判別分析法//////////////////////////////////////////////////////////////
-double edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd,int &Edge_derectory_number) {
+double edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int paramerter[], int paramerter_count, int sd,int &Edge_derectory_number, char date[]) {
 
 	char inputdate_directory[128];
 	char outputdate_directory[128];
@@ -658,7 +659,7 @@ double edge_st_temp(char date_directory[], int &image_xt, int &image_yt, int par
 }
 
 ///////////////対象画像での判別分析法//////////////////////////////////////////////////////
-int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int paramerter_count, int sd, int &Edge_derectory_number){
+int otsu(char date_directory[], int &image_x, int &image_y,int paramerter[], int paramerter_count, int sd, int &Edge_derectory_number, char date[]){
 
 	char inputdate_directory[128];
 	char outputdate_directory[128];
